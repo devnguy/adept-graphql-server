@@ -2,7 +2,7 @@ const { gql } = require('apollo-server')
 const { GraphQLScalarType, Kind } = require('graphql')
 
 // Source: https://www.apollographql.com/docs/apollo-server/schema/custom-scalars/
-const dateScalar = new GraphQLScalarType({
+const DateScalar = new GraphQLScalarType({
   name: 'Date',
   description: 'Date custom scalar type',
   serialize(value) {
@@ -35,11 +35,26 @@ const typeDefs = gql`
     resume: Resume
   }
 
+  input UserInput {
+    id: ID!
+    name: String!
+    email: String!
+    city: String
+    state: String
+  }
+
   type JobApplication {
     id: ID!
     user: User!
     jobPosting: JobPosting!
-    dateApplied: Date!
+    # dateApplied: Date!
+  }
+
+  input JobApplicationInput {
+    id: ID!
+    user: UserInput!
+    jobPosting: JobPostingInput!
+    # dateApplied: Date!
   }
 
   type JobPosting {
@@ -47,7 +62,7 @@ const typeDefs = gql`
     skillsRequired: [Skill!]!
     positionTitle: String!
     company: String!
-    datePosted: Date!
+    # datePosted: Date!
     city: String
     state: String
     salary: Int
@@ -56,7 +71,26 @@ const typeDefs = gql`
     applicants: [JobApplication!]!
   }
 
+  input JobPostingInput {
+    id: ID!
+    skillsRequired: [SkillInput!]!
+    positionTitle: String!
+    company: String!
+    # datePosted: Date!
+    city: String
+    state: String
+    salary: Int
+    type: JobType!
+    description: String!
+    applicants: [JobApplicationInput!]!
+  }
+
   type Skill {
+    id: ID!
+    name: String!
+  }
+
+  input SkillInput {
     id: ID!
     name: String!
   }
@@ -114,6 +148,13 @@ const typeDefs = gql`
     type: UserType!
   }
 
+  type DeleteUserResponse {
+    id: ID!
+    name: String!
+    email: String!
+    type: UserType!
+  }
+
   input UpdateUserLocationInput {
     id: ID!
     city: String!
@@ -128,7 +169,7 @@ const typeDefs = gql`
 
   input AddSkillToUserInput {
     id: ID!
-    skills: [Skill!]!
+    skills: [SkillInput!]!
   }
 
   type AddSkillToUserResponse {
@@ -138,7 +179,7 @@ const typeDefs = gql`
 
   input DeleteSkillFromUserInput {
     id: ID!
-    skills: [Skill!]!
+    skills: [SkillInput!]!
   }
 
   type DeleteSkillFromUserResponse {
@@ -148,7 +189,7 @@ const typeDefs = gql`
 
   input AddJobApplicationToUserInput {
     id: ID!
-    jobApplications: [JobApplication!]!
+    jobApplications: [JobApplicationInput!]!
   }
 
   type addJobApplicationToUserResponse {
@@ -158,7 +199,7 @@ const typeDefs = gql`
 
   input AddJobPostingToUserInput {
     id: ID!
-    jobPostings: [JobPosting!]!
+    jobPostings: [JobPostingInput!]!
   }
 
   type AddJobPostingToUserResponse {
@@ -245,20 +286,20 @@ const typeDefs = gql`
       input: AddWorkExperienceInput!
     ): addWorkExperienceToResumeResponse
 
-    createJobApplication(
-      input: CreateJobApplication!
-    ): CreateJobApplicationResponse
-    deleteJobApplication(id: ID!): deleteJobApplicationResponse
+    #   createJobApplication(
+    #     input: CreateJobApplication!
+    #   ): CreateJobApplicationResponse
+    #   deleteJobApplication(id: ID!): deleteJobApplicationResponse
 
-    createJobPosting(input: CreateJobPostingInput!): createJobPostingResponse
-    addJobApplicationToJobPosting(
-      input: AddJobApplicationToJobPostingInput!
-    ): AddJobApplicationToJobPostingResponse
-    deleteJobPosting(id: ID!): DeleteJobPostingResponse
+    #   createJobPosting(input: CreateJobPostingInput!): createJobPostingResponse
+    #   addJobApplicationToJobPosting(
+    #     input: AddJobApplicationToJobPostingInput!
+    #   ): AddJobApplicationToJobPostingResponse
+    #   deleteJobPosting(id: ID!): DeleteJobPostingResponse
 
-    createSkill(input: CreateSkillInput!): CreateSkillResponse
+    #   createSkill(input: CreateSkillInput!): CreateSkillResponse
 
-    deleteSchool(id: ID!): DeleteSchoolResponse
+    #   deleteSchool(id: ID!): DeleteSchoolResponse
   }
 `
 
