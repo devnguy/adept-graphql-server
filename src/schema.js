@@ -114,6 +114,100 @@ const typeDefs = gql`
     type: UserType!
   }
 
+  input UpdateUserLocationInput {
+    id: ID!
+    city: String!
+    state: String!
+  }
+
+  type UpdateUserLocationResponse {
+    id: ID!
+    city: String!
+    state: String!
+  }
+
+  input AddSkillToUserInput {
+    id: ID!
+    skills: [Skill!]!
+  }
+
+  type AddSkillToUserResponse {
+    id: ID!
+    skills: [Skill!]!
+  }
+
+  input DeleteSkillFromUserInput {
+    id: ID!
+    skills: [Skill!]!
+  }
+
+  type DeleteSkillFromUserResponse {
+    id: ID!
+    skills: [Skill!]!
+  }
+
+  input AddJobApplicationToUserInput {
+    id: ID!
+    jobApplications: [JobApplication!]!
+  }
+
+  type addJobApplicationToUserResponse {
+    id: ID!
+    jobApplications: [JobApplication!]!
+  }
+
+  input AddJobPostingToUserInput {
+    id: ID!
+    jobPostings: [JobPosting!]!
+  }
+
+  type AddJobPostingToUserResponse {
+    id: ID!
+    jobPostings: [JobPosting!]!
+  }
+
+  input AddSchoolInput {
+    name: String!
+    degree: String!
+    startDate: Int!
+    endDate: Int!
+    major: String!
+    gpa: Float
+  }
+
+  type AddSchoolToResumeResponse {
+    id: ID!
+    name: String!
+    degree: String!
+    startDate: Int!
+    endDate: Int!
+    major: String!
+    gpa: Float
+  }
+
+  input AddWorkExperienceInput {
+    company: String!
+    position: String!
+    startDate: Int!
+    endDate: Int
+    isCurrentPosition: Boolean!
+    city: String
+    state: String
+    description: String!
+  }
+
+  type addWorkExperienceToResumeResponse {
+    id: ID!
+    company: String!
+    position: String!
+    startDate: Int!
+    endDate: Int
+    isCurrentPosition: Boolean!
+    city: String
+    state: String
+    description: String!
+  }
+
   type Query {
     getUserById(id: ID!): User
     searchUsers(name: String): [User!]!
