@@ -35,25 +35,10 @@ const typeDefs = gql`
     resume: Resume
   }
 
-  input UserInput {
-    id: ID!
-    name: String!
-    email: String!
-    city: String
-    state: String
-  }
-
   type JobApplication {
     id: ID!
     user: User!
     jobPosting: JobPosting!
-    # dateApplied: Date!
-  }
-
-  input JobApplicationInput {
-    id: ID!
-    user: UserInput!
-    jobPosting: JobPostingInput!
     # dateApplied: Date!
   }
 
@@ -71,26 +56,7 @@ const typeDefs = gql`
     applicants: [JobApplication!]!
   }
 
-  input JobPostingInput {
-    id: ID!
-    skillsRequired: [SkillInput!]!
-    positionTitle: String!
-    company: String!
-    # datePosted: Date!
-    city: String
-    state: String
-    salary: Int
-    type: JobType!
-    description: String!
-    applicants: [JobApplicationInput!]!
-  }
-
   type Skill {
-    id: ID!
-    name: String!
-  }
-
-  input SkillInput {
     id: ID!
     name: String!
   }
@@ -142,69 +108,69 @@ const typeDefs = gql`
   }
 
   type CreateUserResponse {
-    id: ID!
+    userId: ID!
     name: String!
     email: String!
     type: UserType!
   }
 
   type DeleteUserResponse {
-    id: ID!
+    userId: ID!
     name: String!
     email: String!
     type: UserType!
   }
 
   input UpdateUserLocationInput {
-    id: ID!
+    userId: ID!
     city: String!
     state: String!
   }
 
   type UpdateUserLocationResponse {
-    id: ID!
+    userId: ID!
     city: String!
     state: String!
   }
 
   input AddSkillToUserInput {
-    id: ID!
-    skills: [SkillInput!]!
+    userId: ID!
+    skillId: ID!
   }
 
   type AddSkillToUserResponse {
-    id: ID!
-    skills: [Skill!]!
+    skillId: ID!
+    user: User!
   }
 
   input DeleteSkillFromUserInput {
-    id: ID!
-    skills: [SkillInput!]!
+    userId: ID!
+    skillId: ID!
   }
 
   type DeleteSkillFromUserResponse {
-    id: ID!
-    skills: [Skill!]!
+    skillId: ID!
+    user: User!
   }
 
   input AddJobApplicationToUserInput {
     id: ID!
-    jobApplications: [JobApplicationInput!]!
+    jobApplication: ID!
   }
 
   type addJobApplicationToUserResponse {
     id: ID!
-    jobApplications: [JobApplication!]!
+    user: User!
   }
 
   input AddJobPostingToUserInput {
     id: ID!
-    jobPostings: [JobPostingInput!]!
+    jobPosting: ID!
   }
 
   type AddJobPostingToUserResponse {
     id: ID!
-    jobPostings: [JobPosting!]!
+    user: User!
   }
 
   input AddSchoolInput {
@@ -311,6 +277,7 @@ const typeDefs = gql`
       company: String
       location: String
     ): [JobPosting!]!
+    getAllSkills: [Skill!]!
     getSkillById(id: ID!): Skill
     searchSkills(name: String): [Skill!]!
   }

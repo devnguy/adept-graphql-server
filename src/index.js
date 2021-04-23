@@ -1,7 +1,17 @@
-const { ApolloServer } = require('apollo-server')
+const { ApolloServer, MockList } = require('apollo-server')
 const typeDefs = require('./schema')
 
-const server = new ApolloServer({ typeDefs })
+const mocks = {
+  Query: () => ({
+    getAllSkills: () => new MockList([2, 6]),
+  }),
+  Skill: () => ({
+    id: () => 'skill_1',
+    name: () => 'React',
+  }),
+}
+
+const server = new ApolloServer({ typeDefs, mocks })
 
 server.listen().then(() => {
   console.log(`
