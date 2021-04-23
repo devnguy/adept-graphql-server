@@ -35,27 +35,12 @@ const typeDefs = gql`
     resume: Resume
   }
 
-  # input UserInput {
-  #   id: ID!
-  #   name: String!
-  #   email: String!
-  #   city: String
-  #   state: String
-  # }
-
   type JobApplication {
     id: ID!
     user: User!
     jobPosting: JobPosting!
     # dateApplied: Date!
   }
-
-  # input JobApplicationInput {
-  #   id: ID!
-  #   user: UserInput!
-  #   jobPosting: JobPostingInput!
-  #   # dateApplied: Date!
-  # }
 
   type JobPosting {
     id: ID!
@@ -71,29 +56,10 @@ const typeDefs = gql`
     applicants: [JobApplication!]!
   }
 
-  # input JobPostingInput {
-  #   id: ID!
-  #   skillsRequired: [SkillInput!]!
-  #   positionTitle: String!
-  #   company: String!
-  #   # datePosted: Date!
-  #   city: String
-  #   state: String
-  #   salary: Int
-  #   type: JobType!
-  #   description: String!
-  #   applicants: [JobApplicationInput!]!
-  # }
-
   type Skill {
     id: ID!
     name: String!
   }
-
-  # input SkillInput {
-  #   id: ID!
-  #   name: String!
-  # }
 
   type School {
     id: ID!
