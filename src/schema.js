@@ -134,7 +134,7 @@ const typeDefs = gql`
     jobApplicationId: ID!
   }
 
-  type addJobApplicationToUserResponse {
+  type AddJobApplicationToUserResponse {
     user: User!
   }
 
@@ -173,7 +173,7 @@ const typeDefs = gql`
     description: String!
   }
 
-  type addWorkExperienceToResumeResponse {
+  type AddWorkExperienceToResumeResponse {
     user: User!
   }
 
@@ -185,7 +185,7 @@ const typeDefs = gql`
     jobApplication: JobApplication!
   }
 
-  type deleteJobApplicationResponse {
+  type DeleteJobApplicationResponse {
     deletedJobApplicationId: ID!
   }
 
@@ -198,7 +198,7 @@ const typeDefs = gql`
     type: JobType!
   }
 
-  type createJobPostingResponse {
+  type CreateJobPostingResponse {
     jobPosting: JobPosting!
   }
 
@@ -256,21 +256,21 @@ const typeDefs = gql`
     ): DeleteSkillFromUserResponse
     addJobApplicationToUser(
       input: AddJobApplicationToUserInput!
-    ): addJobApplicationToUserResponse
+    ): AddJobApplicationToUserResponse
     addJobPostingToUser(
       input: AddJobPostingToUserInput!
     ): AddJobPostingToUserResponse
     addSchoolToResume(input: AddSchoolInput!): AddSchoolToResumeResponse
     addWorkExperienceToResume(
       input: AddWorkExperienceInput!
-    ): addWorkExperienceToResumeResponse
+    ): AddWorkExperienceToResumeResponse
 
     createJobApplication(
       input: CreateJobApplicationInput!
     ): CreateJobApplicationResponse
-    deleteJobApplication(id: ID!): deleteJobApplicationResponse
+    deleteJobApplication(id: ID!): DeleteJobApplicationResponse
 
-    createJobPosting(input: CreateJobPostingInput!): createJobPostingResponse
+    createJobPosting(input: CreateJobPostingInput!): CreateJobPostingResponse
     addJobApplicationToJobPosting(
       input: AddJobApplicationToJobPostingInput!
     ): AddJobApplicationToJobPostingResponse
