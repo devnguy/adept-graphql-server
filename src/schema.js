@@ -249,6 +249,56 @@ const typeDefs = gql`
     description: String!
   }
 
+  input CreateJobApplicationInput {
+    jobPostingId: ID!
+  }
+
+  type CreateJobApplicationResponse {
+    jobApplication: JobApplication!
+  }
+
+  type deleteJobApplicationResponse {
+    deletedJobApplicationId: ID!
+  }
+
+  input CreateJobPostingInput {
+    positionTitle: String!
+    company: String!
+    city: String!
+    state: String!
+    salary: Int!
+    type: JobType!
+  }
+
+  type createJobPostingResponse {
+    jobPosting: JobPosting!
+  }
+
+  input AddJobApplicationToJobPostingInput {
+    jobApplicationId: ID!
+    jobPostingId: ID!
+  }
+
+  type AddJobApplicationToJobPostingResponse {
+    jobPosting: JobPosting!
+  }
+
+  type DeleteJobPostingResponse {
+    deletedJobPostingId: ID!
+  }
+
+  input CreateSkillInput {
+    name: String!
+  }
+
+  type CreateSkillResponse {
+    skill: Skill!
+  }
+
+  type DeleteSchoolResponse {
+    deletedSchoolId: ID!
+  }
+
   type Query {
     getUserById(id: ID!): User
     searchUsers(name: String): [User!]!
@@ -286,20 +336,20 @@ const typeDefs = gql`
       input: AddWorkExperienceInput!
     ): addWorkExperienceToResumeResponse
 
-    #   createJobApplication(
-    #     input: CreateJobApplication!
-    #   ): CreateJobApplicationResponse
-    #   deleteJobApplication(id: ID!): deleteJobApplicationResponse
+    createJobApplication(
+      input: CreateJobApplicationInput!
+    ): CreateJobApplicationResponse
+    deleteJobApplication(id: ID!): deleteJobApplicationResponse
 
-    #   createJobPosting(input: CreateJobPostingInput!): createJobPostingResponse
-    #   addJobApplicationToJobPosting(
-    #     input: AddJobApplicationToJobPostingInput!
-    #   ): AddJobApplicationToJobPostingResponse
-    #   deleteJobPosting(id: ID!): DeleteJobPostingResponse
+    createJobPosting(input: CreateJobPostingInput!): createJobPostingResponse
+    addJobApplicationToJobPosting(
+      input: AddJobApplicationToJobPostingInput!
+    ): AddJobApplicationToJobPostingResponse
+    deleteJobPosting(id: ID!): DeleteJobPostingResponse
 
-    #   createSkill(input: CreateSkillInput!): CreateSkillResponse
+    createSkill(input: CreateSkillInput!): CreateSkillResponse
 
-    #   deleteSchool(id: ID!): DeleteSchoolResponse
+    deleteSchool(id: ID!): DeleteSchoolResponse
   }
 `
 
