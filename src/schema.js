@@ -116,9 +116,6 @@ const typeDefs = gql`
 
   type DeleteUserResponse {
     userId: ID!
-    name: String!
-    email: String!
-    type: UserType!
   }
 
   input UpdateUserLocationInput {
@@ -128,9 +125,7 @@ const typeDefs = gql`
   }
 
   type UpdateUserLocationResponse {
-    userId: ID!
-    city: String!
-    state: String!
+    user: User!
   }
 
   input AddSkillToUserInput {
@@ -139,7 +134,6 @@ const typeDefs = gql`
   }
 
   type AddSkillToUserResponse {
-    skillId: ID!
     user: User!
   }
 
@@ -149,31 +143,29 @@ const typeDefs = gql`
   }
 
   type DeleteSkillFromUserResponse {
-    skillId: ID!
     user: User!
   }
 
   input AddJobApplicationToUserInput {
-    id: ID!
-    jobApplication: ID!
+    userId: ID!
+    jobApplicationId: ID!
   }
 
   type addJobApplicationToUserResponse {
-    id: ID!
     user: User!
   }
 
   input AddJobPostingToUserInput {
-    id: ID!
-    jobPosting: ID!
+    userId: ID!
+    jobPostingId: ID!
   }
 
   type AddJobPostingToUserResponse {
-    id: ID!
     user: User!
   }
 
   input AddSchoolInput {
+    userId: ID!
     name: String!
     degree: String!
     startDate: Int!
@@ -183,16 +175,11 @@ const typeDefs = gql`
   }
 
   type AddSchoolToResumeResponse {
-    id: ID!
-    name: String!
-    degree: String!
-    startDate: Int!
-    endDate: Int!
-    major: String!
-    gpa: Float
+    user: User!
   }
 
   input AddWorkExperienceInput {
+    userId: ID!
     company: String!
     position: String!
     startDate: Int!
@@ -204,15 +191,7 @@ const typeDefs = gql`
   }
 
   type addWorkExperienceToResumeResponse {
-    id: ID!
-    company: String!
-    position: String!
-    startDate: Int!
-    endDate: Int
-    isCurrentPosition: Boolean!
-    city: String
-    state: String
-    description: String!
+    user: User!
   }
 
   input CreateJobApplicationInput {
