@@ -1,0 +1,88 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+    id                Int              @id @default(autoincrement())
+    name              String
+    email             String
+    type              UserType
+    skills            Skill[]
+    jobApplications   JobApplication[]
+    jobPostings       JobPosting[]
+    contacts          User[]
+    password          String
+    city              String?
+    state             String?
+    resume            Resume
+}
+
+model JobApplication {
+    id                Int              @id @default(autoincrement())
+    user              User
+    jobPosting        JobPosting
+    dateApplied       DateTime         @default(now())
+}
+
+model JobPosting {
+    id                Int              @id @default(autoincrement())
+    skillsRequired    Skill
+    positionTitle     String
+    company           String
+    datePosted        DateTime         @default(now())
+    city              String?
+    state             String?
+    salary            Int?
+    type              JobType
+    description       String
+    applicants        JobApplication
+}
+
+model Skill {
+    id                Int              @id @default(autoincrement())
+    name              String
+}
+
+model School {
+    id                Int              @id @default(autoincrement())
+    name              String
+    degree            String
+    startDate         Int
+    endDate           Int?
+    major             String
+    gpa               Float?
+}
+
+model WorkExperience {
+    id                Int              @id @default(autoincrement())
+    company           String
+    position          String
+    startDate         Int
+    endDate           Int?
+    isCurrentPosition Boolean
+    city              String?
+    state             String?
+    description       String
+}
+
+model Resume {
+    id                Int              @id @default(autoincrement())
+    education         School
+    workExperience    WorkExperience
+}
+
+enum UserType {
+    EMPLOYEE
+    EMPLOYER
+}
+
+enum JobType {
+    FULL_TIME
+    PART_TIME
+    INTERNSHIP
+}
