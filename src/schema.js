@@ -227,7 +227,7 @@ const typeDefs = gql`
     deletedSchoolId: ID!
   }
 
-  type LoginResponse {
+  type LoginUserResponse {
     token: String
     user: User
   }
@@ -286,8 +286,9 @@ const typeDefs = gql`
 
     deleteSchool(id: ID!): DeleteSchoolResponse
 
-    register(email: String!, password: String!): User!
-    login(email: String!, password: String!): LoginResponse
+    # TODO: Integrate with createUser
+    registerUser(email: String!, password: String!): User!
+    loginUser(email: String!, password: String!): LoginUserResponse
   }
 `
 
