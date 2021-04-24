@@ -2,6 +2,8 @@ const { ApolloServer, MockList } = require('apollo-server')
 const typeDefs = require('./schema')
 const resolvers = require('./resolvers')
 
+require('dotenv').config()
+
 const mocks = {
   Query: () => ({
     getAllSkills: () => new MockList([2, 6]),
