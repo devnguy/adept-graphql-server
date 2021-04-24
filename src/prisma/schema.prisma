@@ -1,5 +1,5 @@
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -8,81 +8,94 @@ generator client {
 }
 
 model User {
-    id                Int              @id @default(autoincrement())
-    name              String
-    email             String
-    type              UserType
-    skills            Skill[]
-    jobApplications   JobApplication[]
-    jobPostings       JobPosting[]
-    contacts          User[]
-    password          String
-    city              String?
-    state             String?
-    resume            Resume
+  id               Int              @id @default(autoincrement())
+  name             String
+  email            String
+  type             UserType
+  skills           Skill[]
+  jobApplications  JobApplication[]
+  jobPostings      JobPosting[]
+  contacts         User[]           @relation("contacts")
+  password         String
+  city             String?
+  state            String?
+  resume           Resume?
+  contactsRelation User[]           @relation("contacts")
 }
 
 model JobApplication {
-    id                Int              @id @default(autoincrement())
-    user              User
-    jobPosting        JobPosting
-    dateApplied       DateTime         @default(now())
+  id           Int        @id @default(autoincrement())
+  user         User       @relation(fields: [userId], references: [id])
+  jobPosting   JobPosting @relation(fields: [jobPostingId], references: [id])
+  dateApplied  DateTime   @default(now())
+  userId       Int
+  jobPostingId Int
 }
 
 model JobPosting {
-    id                Int              @id @default(autoincrement())
-    skillsRequired    Skill
-    positionTitle     String
-    company           String
-    datePosted        DateTime         @default(now())
-    city              String?
-    state             String?
-    salary            Int?
-    type              JobType
-    description       String
-    applicants        JobApplication
+  id             Int              @id @default(autoincrement())
+  skillsRequired Skill[]
+  positionTitle  String
+  company        String
+  datePosted     DateTime         @default(now())
+  city           String?
+  state          String?
+  salary         Int?
+  type           JobType
+  description    String
+  applicants     JobApplication[]
+  postedBy       User             @relation(fields: [userId], references: [id])
+  userId         Int
 }
 
 model Skill {
-    id                Int              @id @default(autoincrement())
-    name              String
+  id         Int          @id @default(autoincrement())
+  name       String
+  User       User[]
+  JobPosting JobPosting[]
 }
 
 model School {
-    id                Int              @id @default(autoincrement())
-    name              String
-    degree            String
-    startDate         Int
-    endDate           Int?
-    major             String
-    gpa               Float?
+  id        Int    @id @default(autoincrement())
+  name      String
+  degree    String
+  startDate Int
+  endDate   Int?
+  major     String
+  gpa       Float?
+  Resume    Resume @relation(fields: [resumeId], references: [id])
+  resumeId  Int
 }
 
 model WorkExperience {
-    id                Int              @id @default(autoincrement())
-    company           String
-    position          String
-    startDate         Int
-    endDate           Int?
-    isCurrentPosition Boolean
-    city              String?
-    state             String?
-    description       String
+  id                Int     @id @default(autoincrement())
+  company           String
+  position          String
+  startDate         Int
+  endDate           Int?
+  isCurrentPosition Boolean
+  city              String?
+  state             String?
+  description       String
+  Resume            Resume  @relation(fields: [resumeId], references: [id])
+  resumeId          Int
 }
 
 model Resume {
-    id                Int              @id @default(autoincrement())
-    education         School
-    workExperience    WorkExperience
+  id             Int              @id @default(autoincrement())
+  education      School[]
+  workExperience WorkExperience[]
+  User           User             @relation(fields: [userId], references: [id])
+  userId         Int
 }
 
 enum UserType {
-    EMPLOYEE
-    EMPLOYER
+  EMPLOYEE
+  EMPLOYER
 }
 
 enum JobType {
-    FULL_TIME
-    PART_TIME
-    INTERNSHIP
+  FULL_TIME
+  PART_TIME
+  INTERNSHIP
 }
