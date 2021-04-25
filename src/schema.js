@@ -227,9 +227,15 @@ const typeDefs = gql`
     deletedSchoolId: ID!
   }
 
+  type LoginUserResponse {
+    token: String
+    user: User
+  }
+
   type Query {
     getUserById(id: ID!): User
     searchUsers(name: String): [User!]!
+    currentUser: User!
     getJobApplicationById(id: ID!): JobApplication
     getAllJobApplications: [JobApplication!]!
     getJobPostingById(id: ID!): JobPosting
@@ -279,6 +285,10 @@ const typeDefs = gql`
     createSkill(input: CreateSkillInput!): CreateSkillResponse
 
     deleteSchool(id: ID!): DeleteSchoolResponse
+
+    # TODO: Integrate with createUser
+    registerUser(email: String!, password: String!): User!
+    loginUser(email: String!, password: String!): LoginUserResponse
   }
 `
 
