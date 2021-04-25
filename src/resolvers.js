@@ -36,10 +36,8 @@ const resolvers = {
       return {
         token: jwt.sign(
           {
-            data: {
-              id: user.id,
-              email,
-            },
+            id: user.id,
+            email,
           },
           process.env.JWT_SECRET,
           {
