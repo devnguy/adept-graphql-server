@@ -1,35 +1,20 @@
 const { gql } = require('apollo-server')
-const { GraphQLScalarType, Kind } = require('graphql')
-
-// Source: https://www.apollographql.com/docs/apollo-server/schema/custom-scalars/
-const dateScalar = new GraphQLScalarType({
-  name: 'Date',
-  description: 'Date custom scalar type',
-  serialize(value) {
-    return value.getTime() // Convert outgoing Date to integer for JSON
-  },
-  parseValue(value) {
-    return new Date(value) // Convert incoming integer to Date
-  },
-  parseLiteral(ast) {
-    if (ast.kind === Kind.INT) {
-      return new Date(parseInt(ast.value, 10)) // Convert hard-coded AST string to integer and then to Date
-    }
-    return null // Invalid hard-coded value (not an integer)
-  },
-})
 
 const typeDefs = gql`
+  scalar Date
+
   type User {
     id: ID!
     name: String!
+    email: String!
     type: UserType!
     skills: [Skill!]!
     jobApplications: [JobApplication!]!
     jobPostings: [JobPosting!]!
     contacts: [User!]!
     password: String!
-    location: Location!
+    city: String
+    state: String
     resume: Resume
   }
 
@@ -43,23 +28,20 @@ const typeDefs = gql`
   type JobPosting {
     id: ID!
     skillsRequired: [Skill!]!
+    positionTitle: String!
     company: String!
     datePosted: Date!
-    location: Location!
+    city: String
+    state: String
     salary: Int
     type: JobType!
     description: String!
+    applicants: [JobApplication!]!
   }
 
   type Skill {
     id: ID!
     name: String!
-  }
-
-  type Location {
-    id: ID!
-    city: String!
-    state: String!
   }
 
   type School {
@@ -79,7 +61,8 @@ const typeDefs = gql`
     startDate: Int!
     endDate: Int
     isCurrentPosition: Boolean!
-    location: Location!
+    city: String
+    state: String
     description: String!
   }
 
@@ -98,6 +81,213 @@ const typeDefs = gql`
     FULL_TIME
     PART_TIME
     INTERNSHIP
+  }
+
+  input CreateUserInput {
+    name: String!
+    email: String!
+    type: UserType!
+    password: String!
+  }
+
+  type CreateUserResponse {
+    userId: ID!
+    name: String!
+    email: String!
+    type: UserType!
+  }
+
+  type DeleteUserResponse {
+    userId: ID!
+  }
+
+  input UpdateUserLocationInput {
+    userId: ID!
+    city: String!
+    state: String!
+  }
+
+  type UpdateUserLocationResponse {
+    user: User!
+  }
+
+  input AddSkillToUserInput {
+    userId: ID!
+    skillId: ID!
+  }
+
+  type AddSkillToUserResponse {
+    user: User!
+  }
+
+  input DeleteSkillFromUserInput {
+    userId: ID!
+    skillId: ID!
+  }
+
+  type DeleteSkillFromUserResponse {
+    user: User!
+  }
+
+  input AddJobApplicationToUserInput {
+    userId: ID!
+    jobApplicationId: ID!
+  }
+
+  type AddJobApplicationToUserResponse {
+    user: User!
+  }
+
+  input AddJobPostingToUserInput {
+    userId: ID!
+    jobPostingId: ID!
+  }
+
+  type AddJobPostingToUserResponse {
+    user: User!
+  }
+
+  input AddSchoolInput {
+    userId: ID!
+    name: String!
+    degree: String!
+    startDate: Int!
+    endDate: Int!
+    major: String!
+    gpa: Float
+  }
+
+  type AddSchoolToResumeResponse {
+    user: User!
+  }
+
+  input AddWorkExperienceInput {
+    userId: ID!
+    company: String!
+    position: String!
+    startDate: Int!
+    endDate: Int
+    isCurrentPosition: Boolean!
+    city: String
+    state: String
+    description: String!
+  }
+
+  type AddWorkExperienceToResumeResponse {
+    user: User!
+  }
+
+  input CreateJobApplicationInput {
+    jobPostingId: ID!
+  }
+
+  type CreateJobApplicationResponse {
+    jobApplication: JobApplication!
+  }
+
+  type DeleteJobApplicationResponse {
+    deletedJobApplicationId: ID!
+  }
+
+  input CreateJobPostingInput {
+    positionTitle: String!
+    company: String!
+    city: String!
+    state: String!
+    salary: Int!
+    type: JobType!
+  }
+
+  type CreateJobPostingResponse {
+    jobPosting: JobPosting!
+  }
+
+  input AddJobApplicationToJobPostingInput {
+    jobApplicationId: ID!
+    jobPostingId: ID!
+  }
+
+  type AddJobApplicationToJobPostingResponse {
+    jobPosting: JobPosting!
+  }
+
+  type DeleteJobPostingResponse {
+    deletedJobPostingId: ID!
+  }
+
+  input CreateSkillInput {
+    name: String!
+  }
+
+  type CreateSkillResponse {
+    skill: Skill!
+  }
+
+  type DeleteSchoolResponse {
+    deletedSchoolId: ID!
+  }
+
+  type LoginResponse {
+    token: String
+    user: User
+  }
+
+  type Query {
+    getUserById(id: ID!): User
+    searchUsers(name: String): [User!]!
+    currentUser: User!
+    getJobApplicationById(id: ID!): JobApplication
+    getAllJobApplications: [JobApplication!]!
+    getJobPostingById(id: ID!): JobPosting
+    getAllJobPostings: [JobPosting!]!
+    searchJobPostings(
+      positionTitle: String
+      company: String
+      location: String
+    ): [JobPosting!]!
+    getAllSkills: [Skill!]!
+    getSkillById(id: ID!): Skill
+    searchSkills(name: String): [Skill!]!
+  }
+
+  type Mutation {
+    createUser(input: CreateUserInput!): CreateUserResponse
+    updateUserLocation(
+      input: UpdateUserLocationInput!
+    ): UpdateUserLocationResponse
+    deleteUser(id: ID!): DeleteUserResponse
+    addSkillToUser(input: AddSkillToUserInput!): AddSkillToUserResponse
+    deleteSkillFromUser(
+      input: DeleteSkillFromUserInput!
+    ): DeleteSkillFromUserResponse
+    addJobApplicationToUser(
+      input: AddJobApplicationToUserInput!
+    ): AddJobApplicationToUserResponse
+    addJobPostingToUser(
+      input: AddJobPostingToUserInput!
+    ): AddJobPostingToUserResponse
+    addSchoolToResume(input: AddSchoolInput!): AddSchoolToResumeResponse
+    addWorkExperienceToResume(
+      input: AddWorkExperienceInput!
+    ): AddWorkExperienceToResumeResponse
+
+    createJobApplication(
+      input: CreateJobApplicationInput!
+    ): CreateJobApplicationResponse
+    deleteJobApplication(id: ID!): DeleteJobApplicationResponse
+
+    createJobPosting(input: CreateJobPostingInput!): CreateJobPostingResponse
+    addJobApplicationToJobPosting(
+      input: AddJobApplicationToJobPostingInput!
+    ): AddJobApplicationToJobPostingResponse
+    deleteJobPosting(id: ID!): DeleteJobPostingResponse
+
+    createSkill(input: CreateSkillInput!): CreateSkillResponse
+
+    deleteSchool(id: ID!): DeleteSchoolResponse
+
+    register(email: String!, password: String!): User!
+    login(email: String!, password: String!): LoginResponse
   }
 `
 
