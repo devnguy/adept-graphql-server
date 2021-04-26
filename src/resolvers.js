@@ -1,6 +1,7 @@
 const DateScalar = require('./DateScalar')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+const { prisma } = require('./db')
 
 // Using to store data until db is set up
 const tempData = []
@@ -8,7 +9,33 @@ const tempData = []
 const resolvers = {
   Date: DateScalar,
 
+  Query: {
+    getUserById: (_, args) => {
+      console.log(args)
+      return prisma.user.findUnique({
+        where: { userId: Number(args.id) },
+      })
+    },
+
+    searchUsers: (_, args) => {
+      return prisma.user.findMany({
+        where: { name: args.name },
+      })
+    },
+  },
+
   Mutation: {
+    createUser: (_, args) => {
+      return prisma.user.create({
+        data: {
+          name: args.input.name,
+          email: args.input.email,
+          type: args.input.type,
+          password: args.input.password,
+        },
+      })
+    },
+
     registerUser: async (_, { email, password }, ctx) => {
       const hash = await bcrypt.hash(password, 10)
 

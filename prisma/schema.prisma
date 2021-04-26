@@ -8,7 +8,7 @@ generator client {
 }
 
 model User {
-  id               Int              @id @default(autoincrement())
+  userId           Int              @id @default(autoincrement())
   name             String
   email            String
   type             UserType
@@ -24,16 +24,16 @@ model User {
 }
 
 model JobApplication {
-  id           Int        @id @default(autoincrement())
-  user         User       @relation(fields: [userId], references: [id])
-  jobPosting   JobPosting @relation(fields: [jobPostingId], references: [id])
-  dateApplied  DateTime   @default(now())
-  userId       Int
-  jobPostingId Int
+  jobAppId    Int        @id @default(autoincrement())
+  user        User       @relation(fields: [userId], references: [userId])
+  jobPosting  JobPosting @relation(fields: [jobPostId], references: [jobPostId])
+  dateApplied DateTime   @default(now())
+  userId      Int
+  jobPostId   Int
 }
 
 model JobPosting {
-  id             Int              @id @default(autoincrement())
+  jobPostId      Int              @id @default(autoincrement())
   skillsRequired Skill[]
   positionTitle  String
   company        String
@@ -44,31 +44,31 @@ model JobPosting {
   type           JobType
   description    String
   applicants     JobApplication[]
-  postedBy       User             @relation(fields: [userId], references: [id])
+  postedBy       User             @relation(fields: [userId], references: [userId])
   userId         Int
 }
 
 model Skill {
-  id         Int          @id @default(autoincrement())
+  skillId    Int          @id @default(autoincrement())
   name       String
   User       User[]
   JobPosting JobPosting[]
 }
 
 model School {
-  id        Int    @id @default(autoincrement())
+  schoolId  Int    @id @default(autoincrement())
   name      String
   degree    String
   startDate Int
   endDate   Int?
   major     String
   gpa       Float?
-  Resume    Resume @relation(fields: [resumeId], references: [id])
+  Resume    Resume @relation(fields: [resumeId], references: [resumeId])
   resumeId  Int
 }
 
 model WorkExperience {
-  id                Int     @id @default(autoincrement())
+  workExpId         Int     @id @default(autoincrement())
   company           String
   position          String
   startDate         Int
@@ -77,15 +77,15 @@ model WorkExperience {
   city              String?
   state             String?
   description       String
-  Resume            Resume  @relation(fields: [resumeId], references: [id])
+  Resume            Resume  @relation(fields: [resumeId], references: [resumeId])
   resumeId          Int
 }
 
 model Resume {
-  id             Int              @id @default(autoincrement())
+  resumeId       Int              @id @default(autoincrement())
   education      School[]
   workExperience WorkExperience[]
-  User           User             @relation(fields: [userId], references: [id])
+  User           User             @relation(fields: [userId], references: [userId])
   userId         Int
 }
 
