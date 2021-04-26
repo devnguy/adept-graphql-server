@@ -147,6 +147,15 @@ const typeDefs = gql`
     user: User!
   }
 
+  input AddContactToUserInput {
+    userId: ID!
+    contactId: ID!
+  }
+
+  type AddContactToUserResponse {
+    user: User!
+  }
+
   input AddSchoolInput {
     userId: ID!
     name: String!
@@ -266,6 +275,7 @@ const typeDefs = gql`
     addJobPostingToUser(
       input: AddJobPostingToUserInput!
     ): AddJobPostingToUserResponse
+    addContactToUser(input: AddContactToUserInput): AddContactToUserResponse
     addSchoolToResume(input: AddSchoolInput!): AddSchoolToResumeResponse
     addWorkExperienceToResume(
       input: AddWorkExperienceInput!
