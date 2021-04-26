@@ -10,28 +10,39 @@ const resolvers = {
   Date: DateScalar,
 
   Query: {
-    getUserById: (_, args) => {
-      console.log(args)
-      return prisma.user.findUnique({
+    getUserById: async (_, args) => {
+      return await prisma.user.findUnique({
         where: { userId: Number(args.id) },
       })
     },
 
-    searchUsers: (_, args) => {
-      return prisma.user.findMany({
+    searchUsers: async (_, args) => {
+      return await prisma.user.findMany({
         where: { name: args.name },
       })
     },
   },
 
   Mutation: {
-    createUser: (_, args) => {
-      return prisma.user.create({
+    createUser: async (_, args) => {
+      return await prisma.user.create({
         data: {
           name: args.input.name,
           email: args.input.email,
           type: args.input.type,
           password: args.input.password,
+        },
+      })
+    },
+
+    updateUserLocation: async (_, args) => {
+      return await prisma.user.update({
+        where: {
+          userId: Number(args.input.userId),
+        },
+        data: {
+          city: args.input.city,
+          state: args.input.state,
         },
       })
     },

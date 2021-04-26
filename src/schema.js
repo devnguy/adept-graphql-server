@@ -108,7 +108,9 @@ const typeDefs = gql`
   }
 
   type UpdateUserLocationResponse {
-    user: User!
+    userId: ID!
+    city: String!
+    state: String!
   }
 
   input AddSkillToUserInput {
