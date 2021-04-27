@@ -11,9 +11,13 @@ const resolvers = {
 
   Query: {
     getUserById: async (_, args) => {
-      return await prisma.user.findUnique({
+      const user = await prisma.user.findUnique({
         where: { userId: Number(args.id) },
       })
+
+      if (!user) throw new Error('That user does not exist')
+
+      return user
     },
 
     searchUsers: async (_, args) => {
@@ -37,6 +41,14 @@ const resolvers = {
 
     updateUserLocation: async (_, args) => {
       let userData = {}
+
+      // Finding if user exists
+      if (
+        !(await prisma.user.findUnique({
+          where: { userId: Number(args.input.userId) },
+        }))
+      )
+        throw new Error('That user does not exist')
 
       userData.user = await prisma.user.update({
         where: {
