@@ -36,7 +36,9 @@ const resolvers = {
     },
 
     updateUserLocation: async (_, args) => {
-      return await prisma.user.update({
+      let userData = {}
+
+      userData.user = await prisma.user.update({
         where: {
           userId: Number(args.input.userId),
         },
@@ -45,6 +47,8 @@ const resolvers = {
           state: args.input.state,
         },
       })
+
+      return userData
     },
 
     registerUser: async (_, { email, password }, ctx) => {
