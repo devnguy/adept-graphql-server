@@ -19,15 +19,14 @@ const typeDefs = gql`
   }
 
   type JobApplication {
-    id: ID!
+    jobAppId: ID!
     user: User!
     jobPosting: JobPosting!
     dateApplied: Date!
   }
 
   type JobPosting {
-    id: ID!
-    skillsRequired: [Skill!]!
+    jobPostId: ID!
     positionTitle: String!
     company: String!
     datePosted: Date!
@@ -36,16 +35,18 @@ const typeDefs = gql`
     salary: Int
     type: JobType!
     description: String!
+    skillsRequired: [Skill!]!
+    postedBy: User!
     applicants: [JobApplication!]!
   }
 
   type Skill {
-    id: ID!
+    skillId: ID!
     name: String!
   }
 
   type School {
-    id: ID!
+    schoolId: ID!
     name: String!
     degree: String!
     startDate: Int!
@@ -55,7 +56,7 @@ const typeDefs = gql`
   }
 
   type WorkExperience {
-    id: ID!
+    workExpId: ID!
     company: String!
     position: String!
     startDate: Int!
@@ -67,7 +68,7 @@ const typeDefs = gql`
   }
 
   type Resume {
-    id: ID!
+    resumeId: ID!
     education: [School!]!
     workExperience: [WorkExperience!]!
   }
@@ -201,10 +202,14 @@ const typeDefs = gql`
   input CreateJobPostingInput {
     positionTitle: String!
     company: String!
-    city: String!
-    state: String!
-    salary: Int!
+    datePosted: Date
+    city: String
+    state: String
+    salary: Int
     type: JobType!
+    description: String!
+    skillsRequired: [ID!]!
+    postedBy: ID!
   }
 
   type CreateJobPostingResponse {

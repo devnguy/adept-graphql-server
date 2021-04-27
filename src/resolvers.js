@@ -63,6 +63,53 @@ const resolvers = {
       return userData
     },
 
+    createJobPosting: async (_, args) => {
+      let jobPostingData = {}
+
+      // Need to create list of skill objects to connect skills to job posting
+      const skillIds = args.input.skillsRequired.map((skill) => ({
+        skillId: Number(skill),
+      }))
+
+      jobPostingData.jobPosting = await prisma.jobPosting.create({
+        data: {
+          positionTitle: args.input.positionTitle,
+          company: args.input.company,
+          datePosted: args.input.datePosted,
+          city: args.input.city,
+          state: args.input.state,
+          salary: args.input.salary,
+          type: args.input.type,
+          description: args.input.description,
+          skillsRequired: {
+            connect: skillIds,
+          },
+          postedBy: {
+            connect: { userId: Number(args.input.postedBy) },
+          },
+        },
+
+        include: {
+          skillsRequired: true,
+          postedBy: true,
+        },
+      })
+
+      return jobPostingData
+    },
+
+    createSkill: async (_, args) => {
+      let skillData = {}
+
+      skillData.skill = await prisma.skill.create({
+        data: {
+          name: args.input.name,
+        },
+      })
+
+      return skillData
+    },
+
     registerUser: async (_, { email, password }, ctx) => {
       const hash = await bcrypt.hash(password, 10)
 
@@ -100,6 +147,22 @@ const resolvers = {
         ),
         user,
       }
+    },
+  },
+
+  JobPosting: {
+    skillsRequired: async (parent) => {
+      // Finding skills for job posting
+      return await prisma.skill.findMany({
+        where: { skillId: parent.skillId },
+      })
+    },
+
+    postedBy: async (parent) => {
+      // Finding user who created job post
+      return await prisma.user.findUnique({
+        where: { userId: Number(parent.userId) },
+      })
     },
   },
 }
