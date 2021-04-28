@@ -1,0 +1,101 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  userId           String           @id @default(uuid())
+  name             String
+  email            String
+  type             UserType
+  skills           Skill[]
+  jobApplications  JobApplication[]
+  jobPostings      JobPosting[]
+  contacts         User[]           @relation("contacts")
+  password         String
+  city             String?
+  state            String?
+  resume           Resume?
+  contactsRelation User[]           @relation("contacts")
+}
+
+model JobApplication {
+  jobAppId    String     @id @default(uuid())
+  user        User       @relation(fields: [userId], references: [userId])
+  jobPosting  JobPosting @relation(fields: [jobPostId], references: [jobPostId])
+  dateApplied DateTime   @default(now())
+  userId      String
+  jobPostId   String
+}
+
+model JobPosting {
+  jobPostId      String           @id @default(uuid())
+  skillsRequired Skill[]
+  positionTitle  String
+  company        String
+  datePosted     DateTime         @default(now())
+  city           String?
+  state          String?
+  salary         Int?
+  type           JobType
+  description    String
+  applicants     JobApplication[]
+  postedBy       User             @relation(fields: [userId], references: [userId])
+  userId         String
+}
+
+model Skill {
+  skillId    String       @id @default(uuid())
+  name       String
+  User       User[]
+  JobPosting JobPosting[]
+}
+
+model School {
+  schoolId  String @id @default(uuid())
+  name      String
+  degree    String
+  startDate Int
+  endDate   Int?
+  major     String
+  gpa       Float?
+  Resume    Resume @relation(fields: [resumeId], references: [resumeId])
+  resumeId  String
+}
+
+model WorkExperience {
+  workExpId         String  @id @default(uuid())
+  company           String
+  position          String
+  startDate         Int
+  endDate           Int?
+  isCurrentPosition Boolean
+  city              String?
+  state             String?
+  description       String
+  Resume            Resume  @relation(fields: [resumeId], references: [resumeId])
+  resumeId          String
+}
+
+model Resume {
+  resumeId       String           @id @default(uuid())
+  education      School[]
+  workExperience WorkExperience[]
+  User           User             @relation(fields: [userId], references: [userId])
+  userId         String
+}
+
+enum UserType {
+  EMPLOYEE
+  EMPLOYER
+}
+
+enum JobType {
+  FULL_TIME
+  PART_TIME
+  INTERNSHIP
+}

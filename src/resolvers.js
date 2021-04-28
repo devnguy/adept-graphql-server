@@ -1,6 +1,7 @@
 const DateScalar = require('./DateScalar')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+const { prisma } = require('./db')
 
 // Using to store data until db is set up
 const tempData = []
@@ -8,7 +9,107 @@ const tempData = []
 const resolvers = {
   Date: DateScalar,
 
+  Query: {
+    getUserById: async (_, args) => {
+      const user = await prisma.user.findUnique({
+        where: { userId: args.id },
+      })
+
+      if (!user) throw new Error('That user does not exist')
+
+      return user
+    },
+
+    searchUsers: async (_, args) => {
+      return await prisma.user.findMany({
+        where: { name: args.name },
+      })
+    },
+  },
+
   Mutation: {
+    createUser: async (_, args) => {
+      return await prisma.user.create({
+        data: {
+          name: args.input.name,
+          email: args.input.email,
+          type: args.input.type,
+          password: args.input.password,
+        },
+      })
+    },
+
+    updateUserLocation: async (_, args) => {
+      let userData = {}
+
+      // Finding if user exists
+      if (
+        !(await prisma.user.findUnique({
+          where: { userId: args.input.userId },
+        }))
+      )
+        throw new Error('That user does not exist')
+
+      userData.user = await prisma.user.update({
+        where: {
+          userId: args.input.userId,
+        },
+        data: {
+          city: args.input.city,
+          state: args.input.state,
+        },
+      })
+
+      return userData
+    },
+
+    createJobPosting: async (_, args) => {
+      let jobPostingData = {}
+
+      // Need to create list of skill objects to connect skills to job posting
+      const skillIds = args.input.skillsRequired.map((skill) => ({
+        skillId: skill,
+      }))
+
+      jobPostingData.jobPosting = await prisma.jobPosting.create({
+        data: {
+          positionTitle: args.input.positionTitle,
+          company: args.input.company,
+          datePosted: args.input.datePosted,
+          city: args.input.city,
+          state: args.input.state,
+          salary: args.input.salary,
+          type: args.input.type,
+          description: args.input.description,
+          skillsRequired: {
+            connect: skillIds,
+          },
+          postedBy: {
+            connect: { userId: args.input.postedBy },
+          },
+        },
+
+        include: {
+          skillsRequired: true,
+          postedBy: true,
+        },
+      })
+
+      return jobPostingData
+    },
+
+    createSkill: async (_, args) => {
+      let skillData = {}
+
+      skillData.skill = await prisma.skill.create({
+        data: {
+          name: args.input.name,
+        },
+      })
+
+      return skillData
+    },
+
     registerUser: async (_, { email, password }, ctx) => {
       const hash = await bcrypt.hash(password, 10)
 
@@ -46,6 +147,22 @@ const resolvers = {
         ),
         user,
       }
+    },
+  },
+
+  JobPosting: {
+    skillsRequired: async (parent) => {
+      // Finding skills for job posting
+      return await prisma.skill.findMany({
+        where: { skillId: parent.skillId },
+      })
+    },
+
+    postedBy: async (parent) => {
+      // Finding user who created job post
+      return await prisma.user.findUnique({
+        where: { userId: parent.userId },
+      })
     },
   },
 }
