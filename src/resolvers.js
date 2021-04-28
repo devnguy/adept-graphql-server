@@ -12,7 +12,7 @@ const resolvers = {
   Query: {
     getUserById: async (_, args) => {
       const user = await prisma.user.findUnique({
-        where: { userId: args.id },
+        where: { userId: args.userId },
       })
 
       if (!user) throw new Error('That user does not exist')
@@ -28,7 +28,7 @@ const resolvers = {
 
     getJobApplicationById: async (_, args) => {
       const jobApplication = await prisma.jobApplication.findUnique({
-        where: { jobAppId: args.id },
+        where: { jobAppId: args.jobAppId },
       })
 
       if (!jobApplication)
@@ -41,21 +41,25 @@ const resolvers = {
       return await prisma.jobApplication.findMany()
     },
 
-    getAllJobApplicationsByUser: async (_, args) => {
-      const jobApplications = await prisma.jobApplication.findMany({
-        where: { userId: args.id },
-      })
+    /**
+     * Commenting these out because I don't think we actually need them
+     * since we have the JobApplication array in both User and JobPosting
+     */
+    //   getAllJobApplicationsByUser: async (_, args) => {
+    //     const jobApplications = await prisma.jobApplication.findMany({
+    //       where: { userId: args.userId },
+    //     })
 
-      return jobApplications
-    },
+    //     return jobApplications
+    //   },
 
-    getAllJobApplicationsForJobPosting: async (_, args) => {
-      const jobApplications = await prisma.jobApplication.findMany({
-        where: { jobPostId: args.id },
-      })
+    //   getAllJobApplicationsForJobPosting: async (_, args) => {
+    //     const jobApplications = await prisma.jobApplication.findMany({
+    //       where: { jobPostId: args.jobPostId },
+    //     })
 
-      return jobApplications
-    },
+    //     return jobApplications
+    //   },
   },
 
   Mutation: {
@@ -201,6 +205,20 @@ const resolvers = {
         ),
         user,
       }
+    },
+  },
+
+  User: {
+    jobApplications: async (parent) => {
+      return await prisma.jobApplication.findMany({
+        where: { userId: parent.userId },
+      })
+    },
+
+    jobPostings: async (parent) => {
+      return await prisma.jobPosting.findMany({
+        where: { userId: parent.userId },
+      })
     },
   },
 
