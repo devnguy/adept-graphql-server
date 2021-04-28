@@ -25,6 +25,37 @@ const resolvers = {
         where: { name: args.name },
       })
     },
+
+    getJobApplicationById: async (_, args) => {
+      const jobApplication = await prisma.jobApplication.findUnique({
+        where: { jobAppId: args.id },
+      })
+
+      if (!jobApplication)
+        throw new Error('That job application does not exist')
+
+      return jobApplication
+    },
+
+    getAllJobApplications: async () => {
+      return await prisma.jobApplication.findMany()
+    },
+
+    getAllJobApplicationsByUser: async (_, args) => {
+      const jobApplications = await prisma.jobApplication.findMany({
+        where: { userId: args.id },
+      })
+
+      return jobApplications
+    },
+
+    getAllJobApplicationsForJobPosting: async (_, args) => {
+      const jobApplications = await prisma.jobApplication.findMany({
+        where: { jobPostId: args.id },
+      })
+
+      return jobApplications
+    },
   },
 
   Mutation: {
@@ -61,6 +92,29 @@ const resolvers = {
       })
 
       return userData
+    },
+
+    createJobApplication: async (_, args) => {
+      let jobApplicationData = {}
+
+      jobApplicationData.jobApplication = await prisma.jobApplication.create({
+        data: {
+          user: {
+            connect: { userId: args.input.userId },
+          },
+          jobPosting: {
+            connect: { jobPostId: args.input.jobPostId },
+          },
+          dateApplied: args.input.dateApplied,
+        },
+
+        include: {
+          user: true,
+          jobPosting: true,
+        },
+      })
+
+      return jobApplicationData
     },
 
     createJobPosting: async (_, args) => {
@@ -147,6 +201,20 @@ const resolvers = {
         ),
         user,
       }
+    },
+  },
+
+  JobApplication: {
+    user: async (parent) => {
+      return await prisma.user.findUnique({
+        where: { userId: parent.userId },
+      })
+    },
+
+    jobPosting: async (parent) => {
+      return await prisma.jobPosting.findUnique({
+        where: { jobPostId: parent.jobPostId },
+      })
     },
   },
 

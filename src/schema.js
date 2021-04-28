@@ -188,7 +188,9 @@ const typeDefs = gql`
   }
 
   input CreateJobApplicationInput {
-    jobPostingId: ID!
+    jobPostId: ID!
+    userId: ID!
+    dateApplied: Date
   }
 
   type CreateJobApplicationResponse {
@@ -252,6 +254,8 @@ const typeDefs = gql`
     currentUser: User!
     getJobApplicationById(id: ID!): JobApplication
     getAllJobApplications: [JobApplication!]!
+    getAllJobApplicationsByUser(id: ID!): [JobApplication!]!
+    getAllJobApplicationsForJobPosting(id: ID!): [JobApplication!]!
     getJobPostingById(id: ID!): JobPosting
     getAllJobPostings: [JobPosting!]!
     searchJobPostings(
