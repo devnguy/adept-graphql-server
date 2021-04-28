@@ -8,7 +8,7 @@ generator client {
 }
 
 model User {
-  userId           Int              @id @default(autoincrement())
+  userId           String           @id @default(uuid())
   name             String
   email            String
   type             UserType
@@ -24,16 +24,16 @@ model User {
 }
 
 model JobApplication {
-  jobAppId    Int        @id @default(autoincrement())
+  jobAppId    String     @id @default(uuid())
   user        User       @relation(fields: [userId], references: [userId])
   jobPosting  JobPosting @relation(fields: [jobPostId], references: [jobPostId])
   dateApplied DateTime   @default(now())
-  userId      Int
-  jobPostId   Int
+  userId      String
+  jobPostId   String
 }
 
 model JobPosting {
-  jobPostId      Int              @id @default(autoincrement())
+  jobPostId      String           @id @default(uuid())
   skillsRequired Skill[]
   positionTitle  String
   company        String
@@ -45,18 +45,18 @@ model JobPosting {
   description    String
   applicants     JobApplication[]
   postedBy       User             @relation(fields: [userId], references: [userId])
-  userId         Int
+  userId         String
 }
 
 model Skill {
-  skillId    Int          @id @default(autoincrement())
+  skillId    String       @id @default(uuid())
   name       String
   User       User[]
   JobPosting JobPosting[]
 }
 
 model School {
-  schoolId  Int    @id @default(autoincrement())
+  schoolId  String @id @default(uuid())
   name      String
   degree    String
   startDate Int
@@ -64,11 +64,11 @@ model School {
   major     String
   gpa       Float?
   Resume    Resume @relation(fields: [resumeId], references: [resumeId])
-  resumeId  Int
+  resumeId  String
 }
 
 model WorkExperience {
-  workExpId         Int     @id @default(autoincrement())
+  workExpId         String  @id @default(uuid())
   company           String
   position          String
   startDate         Int
@@ -78,15 +78,15 @@ model WorkExperience {
   state             String?
   description       String
   Resume            Resume  @relation(fields: [resumeId], references: [resumeId])
-  resumeId          Int
+  resumeId          String
 }
 
 model Resume {
-  resumeId       Int              @id @default(autoincrement())
+  resumeId       String           @id @default(uuid())
   education      School[]
   workExperience WorkExperience[]
   User           User             @relation(fields: [userId], references: [userId])
-  userId         Int
+  userId         String
 }
 
 enum UserType {

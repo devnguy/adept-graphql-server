@@ -12,7 +12,7 @@ const resolvers = {
   Query: {
     getUserById: async (_, args) => {
       const user = await prisma.user.findUnique({
-        where: { userId: Number(args.id) },
+        where: { userId: args.id },
       })
 
       if (!user) throw new Error('That user does not exist')
@@ -45,14 +45,14 @@ const resolvers = {
       // Finding if user exists
       if (
         !(await prisma.user.findUnique({
-          where: { userId: Number(args.input.userId) },
+          where: { userId: args.input.userId },
         }))
       )
         throw new Error('That user does not exist')
 
       userData.user = await prisma.user.update({
         where: {
-          userId: Number(args.input.userId),
+          userId: args.input.userId,
         },
         data: {
           city: args.input.city,
@@ -68,7 +68,7 @@ const resolvers = {
 
       // Need to create list of skill objects to connect skills to job posting
       const skillIds = args.input.skillsRequired.map((skill) => ({
-        skillId: Number(skill),
+        skillId: skill,
       }))
 
       jobPostingData.jobPosting = await prisma.jobPosting.create({
@@ -85,7 +85,7 @@ const resolvers = {
             connect: skillIds,
           },
           postedBy: {
-            connect: { userId: Number(args.input.postedBy) },
+            connect: { userId: args.input.postedBy },
           },
         },
 
@@ -161,7 +161,7 @@ const resolvers = {
     postedBy: async (parent) => {
       // Finding user who created job post
       return await prisma.user.findUnique({
-        where: { userId: Number(parent.userId) },
+        where: { userId: parent.userId },
       })
     },
   },
