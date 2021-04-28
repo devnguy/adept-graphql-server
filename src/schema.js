@@ -92,7 +92,7 @@ const typeDefs = gql`
   }
 
   type CreateUserResponse {
-    userId: Int!
+    userId: ID!
     name: String!
     email: String!
     type: UserType!
