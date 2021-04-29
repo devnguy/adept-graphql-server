@@ -74,6 +74,32 @@ const resolvers = {
 
     //     return jobApplications
     //   },
+
+    getJobPostingById: async (_, args) => {
+      const jobPosting = await prisma.jobPosting.findUnique({
+        where: { jobPostId: args.jobPostId },
+
+        include: {
+          skillsRequired: true,
+          applicants: true,
+        },
+      })
+
+      if (!jobPosting) throw new Error('That job posting does not exist')
+
+      return jobPosting
+    },
+
+    getAllJobPostings: async () => {
+      return await prisma.jobPosting.findMany({
+        include: {
+          skillsRequired: true,
+          applicants: true,
+        },
+      })
+    },
+
+    // TODO: searchJobPostings
   },
 
   Mutation: {
