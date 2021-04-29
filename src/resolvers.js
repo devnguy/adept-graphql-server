@@ -13,6 +13,13 @@ const resolvers = {
     getUserById: async (_, args) => {
       const user = await prisma.user.findUnique({
         where: { userId: args.userId },
+
+        include: {
+          skills: true,
+          jobApplications: true,
+          jobPostings: true,
+          contacts: true,
+        },
       })
 
       if (!user) throw new Error('That user does not exist')
@@ -23,6 +30,13 @@ const resolvers = {
     searchUsers: async (_, args) => {
       return await prisma.user.findMany({
         where: { name: args.name },
+
+        include: {
+          skills: true,
+          jobApplications: true,
+          jobPostings: true,
+          contacts: true,
+        },
       })
     },
 
@@ -220,6 +234,12 @@ const resolvers = {
         where: { userId: parent.userId },
       })
     },
+
+    resume: async (parent) => {
+      return await prisma.resume.findMany({
+        where: { userId: parent.userId },
+      })
+    },
   },
 
   JobApplication: {
@@ -248,6 +268,20 @@ const resolvers = {
       // Finding user who created job post
       return await prisma.user.findUnique({
         where: { userId: parent.userId },
+      })
+    },
+  },
+
+  Resume: {
+    education: async (parent) => {
+      return await prisma.school.findMany({
+        where: { resumeId: parent.resumeId },
+      })
+    },
+
+    workExperience: async (parent) => {
+      return await prisma.workExperience.findMany({
+        where: { resumeId: parent.resumeId },
       })
     },
   },

@@ -12,7 +12,7 @@ model User {
   name             String
   email            String
   type             UserType
-  skills           Skill[]
+  skills           Skill[]          @relation(references: [skillId])
   jobApplications  JobApplication[]
   jobPostings      JobPosting[]
   contacts         User[]           @relation("contacts")
@@ -34,7 +34,7 @@ model JobApplication {
 
 model JobPosting {
   jobPostId      String           @id @default(uuid())
-  skillsRequired Skill[]
+  skillsRequired Skill[]          @relation(references: [skillId])
   positionTitle  String
   company        String
   datePosted     DateTime         @default(now())
@@ -51,8 +51,8 @@ model JobPosting {
 model Skill {
   skillId    String       @id @default(uuid())
   name       String
-  User       User[]
-  JobPosting JobPosting[]
+  User       User[]       @relation(references: [userId])
+  JobPosting JobPosting[] @relation(references: [jobPostId])
 }
 
 model School {
