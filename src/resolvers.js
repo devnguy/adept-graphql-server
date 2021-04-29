@@ -114,6 +114,22 @@ const resolvers = {
       })
     },
 
+    addSkillToUser: async (_, { userId, skillId }) => {
+      return await prisma.user.update({
+        where: { userId: userId },
+        data: {
+          skills: {
+            connect: { skillId: skillId },
+          },
+        },
+        include: {
+          skills: true,
+          jobApplications: true,
+          jobPostings: true,
+        },
+      })
+    },
+
     updateUserLocation: async (_, args) => {
       // Finding if user exists
       if (
