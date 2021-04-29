@@ -100,6 +100,26 @@ const resolvers = {
     },
 
     // TODO: searchJobPostings
+
+    getSkillById: async (_, { skillId }) => {
+      const skill = await prisma.skill.findUnique({
+        where: { skillId: skillId },
+      })
+
+      if (!skill) throw new Error('That skill does not exist')
+
+      return skill
+    },
+
+    getAllSkills: async () => {
+      return await prisma.skill.findMany()
+    },
+
+    searchSkills: async (_, { name }) => {
+      return await prisma.skill.findMany({
+        where: { name: name },
+      })
+    },
   },
 
   Mutation: {

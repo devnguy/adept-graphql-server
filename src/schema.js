@@ -156,8 +156,8 @@ const typeDefs = gql`
     currentUser: User!
     getJobApplicationById(jobAppId: ID!): JobApplication
     getAllJobApplications: [JobApplication!]!
-    getAllJobApplicationsByUser(userId: ID!): [JobApplication!]!
-    getAllJobApplicationsForJobPosting(jobPostId: ID!): [JobApplication!]!
+    # getAllJobApplicationsByUser(userId: ID!): [JobApplication!]!
+    # getAllJobApplicationsForJobPosting(jobPostId: ID!): [JobApplication!]!
     getJobPostingById(jobPostId: ID!): JobPosting
     getAllJobPostings: [JobPosting!]!
     searchJobPostings(
@@ -165,8 +165,8 @@ const typeDefs = gql`
       company: String
       location: String
     ): [JobPosting!]!
-    getAllSkills: [Skill!]!
     getSkillById(skillId: ID!): Skill
+    getAllSkills: [Skill!]!
     searchSkills(name: String): [Skill!]!
   }
 

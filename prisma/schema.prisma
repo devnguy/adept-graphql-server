@@ -54,6 +54,7 @@ model Skill {
   name       String
   User       User[]       @relation(references: [userId])
   JobPosting JobPosting[] @relation(references: [jobPostId])
+  @@unique([name])
 }
 
 model School {
