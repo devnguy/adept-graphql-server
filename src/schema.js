@@ -173,12 +173,13 @@ const typeDefs = gql`
   type Mutation {
     createUser(input: CreateUserInput!): CreateUserResponse
     updateUserLocation(input: UpdateUserLocationInput!): User!
-    deleteUser(id: ID!): ID!
+    deleteUser(userId: ID!): User!
     addSkillToUser(userId: ID!, skillId: ID!): User!
     deleteSkillFromUser(userId: ID!, skillId: ID!): User!
-    addJobApplicationToUser(userId: ID!, jopAppId: ID!): User!
-    addJobPostingToUser(userId: ID!, jobPostingId: ID!): User!
+    # addJobApplicationToUser(userId: ID!, jopAppId: ID!): User!
+    # addJobPostingToUser(userId: ID!, jobPostingId: ID!): User!
     addContactToUser(userId: ID!, contactId: ID!): User!
+    removeContactFromUser(userId: ID!, contactId: ID!): User!
     addSchoolToResume(input: AddSchoolInput!): User!
     addWorkExperienceToResume(input: AddWorkExperienceInput!): User!
 

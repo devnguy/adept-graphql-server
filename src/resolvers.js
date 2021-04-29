@@ -114,22 +114,6 @@ const resolvers = {
       })
     },
 
-    addSkillToUser: async (_, { userId, skillId }) => {
-      return await prisma.user.update({
-        where: { userId: userId },
-        data: {
-          skills: {
-            connect: { skillId: skillId },
-          },
-        },
-        include: {
-          skills: true,
-          jobApplications: true,
-          jobPostings: true,
-        },
-      })
-    },
-
     updateUserLocation: async (_, args) => {
       // Finding if user exists
       if (
@@ -143,9 +127,63 @@ const resolvers = {
         where: {
           userId: args.input.userId,
         },
+
         data: {
           city: args.input.city,
           state: args.input.state,
+        },
+      })
+    },
+
+    deleteUser: async (_, { userId }) => {
+      const findUser = await prisma.user.findUnique({
+        where: { userId: userId },
+      })
+
+      if (!findUser) throw new Error('That user does not exist')
+
+      return await prisma.user.delete({
+        where: { userId: userId },
+      })
+    },
+
+    addSkillToUser: async (_, { userId, skillId }) => {
+      return await prisma.user.update({
+        where: { userId: userId },
+
+        data: {
+          skills: {
+            connect: { skillId: skillId },
+          },
+        },
+
+        include: {
+          skills: true,
+          jobApplications: true,
+          jobPostings: true,
+        },
+      })
+    },
+
+    deleteSkillFromUser: async (_, { userId, skillId }) => {
+      const findUser = await prisma.user.findUnique({
+        where: { userId: userId },
+      })
+
+      if (!findUser) throw new Error('That user does not exist')
+
+      return await prisma.user.update({
+        where: { userId: userId },
+        data: {
+          skills: {
+            disconnect: [{ skillId: skillId }],
+          },
+        },
+
+        include: {
+          skills: true,
+          jobApplications: true,
+          jobPostings: true,
         },
       })
     },
@@ -198,8 +236,6 @@ const resolvers = {
           postedBy: true,
         },
       })
-
-      // return jobPostingData
     },
 
     createSkill: async (_, args) => {
@@ -263,11 +299,11 @@ const resolvers = {
       })
     },
 
-    resume: async (parent) => {
-      return await prisma.resume.findMany({
-        where: { userId: parent.userId },
-      })
-    },
+    // resume: async (parent) => {
+    //   return await prisma.resume.findMany({
+    //     where: { userId: parent.userId },
+    //   })
+    // },
   },
 
   JobApplication: {
