@@ -161,6 +161,7 @@ const resolvers = {
           skills: true,
           jobApplications: true,
           jobPostings: true,
+          contacts: true,
         },
       })
     },
@@ -174,6 +175,7 @@ const resolvers = {
 
       return await prisma.user.update({
         where: { userId: userId },
+
         data: {
           skills: {
             disconnect: [{ skillId: skillId }],
@@ -184,6 +186,45 @@ const resolvers = {
           skills: true,
           jobApplications: true,
           jobPostings: true,
+          contacts: true,
+        },
+      })
+    },
+
+    addContactToUser: async (_, { userId, contactId }) => {
+      return await prisma.user.update({
+        where: { userId: userId },
+
+        data: {
+          contacts: {
+            connect: [{ userId: contactId }],
+          },
+        },
+
+        include: {
+          skills: true,
+          jobApplications: true,
+          jobPostings: true,
+          contacts: true,
+        },
+      })
+    },
+
+    removeContactFromUser: async (_, { userId, contactId }) => {
+      return await prisma.user.update({
+        where: { userId: userId },
+
+        data: {
+          contacts: {
+            disconnect: [{ userId: contactId }],
+          },
+        },
+
+        include: {
+          skills: true,
+          jobApplications: true,
+          jobPostings: true,
+          contacts: true,
         },
       })
     },
@@ -298,6 +339,12 @@ const resolvers = {
         where: { userId: parent.userId },
       })
     },
+
+    // contacts: async (parent) => {
+    //   return await prisma.user.findMany({
+    //     where: { contacts: parent.userId },
+    //   })
+    // },
 
     // resume: async (parent) => {
     //   return await prisma.resume.findMany({
