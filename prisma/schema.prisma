@@ -21,6 +21,7 @@ model User {
   state            String?
   resume           Resume?
   contactsRelation User[]           @relation("contacts")
+  @@unique([email])
 }
 
 model JobApplication {

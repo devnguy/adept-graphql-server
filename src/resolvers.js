@@ -115,8 +115,6 @@ const resolvers = {
     },
 
     updateUserLocation: async (_, args) => {
-      let userData = {}
-
       // Finding if user exists
       if (
         !(await prisma.user.findUnique({
@@ -125,7 +123,7 @@ const resolvers = {
       )
         throw new Error('That user does not exist')
 
-      userData.user = await prisma.user.update({
+      return await prisma.user.update({
         where: {
           userId: args.input.userId,
         },
@@ -134,14 +132,10 @@ const resolvers = {
           state: args.input.state,
         },
       })
-
-      return userData
     },
 
     createJobApplication: async (_, args) => {
-      let jobApplicationData = {}
-
-      jobApplicationData.jobApplication = await prisma.jobApplication.create({
+      return await prisma.jobApplication.create({
         data: {
           user: {
             connect: { userId: args.input.userId },
@@ -157,19 +151,15 @@ const resolvers = {
           jobPosting: true,
         },
       })
-
-      return jobApplicationData
     },
 
     createJobPosting: async (_, args) => {
-      let jobPostingData = {}
-
       // Need to create list of skill objects to connect skills to job posting
-      const skillIds = args.input.skillsRequired.map((skill) => ({
-        skillId: skill,
+      const skillIds = args.input.skillsRequired.map((skillId) => ({
+        skillId,
       }))
 
-      jobPostingData.jobPosting = await prisma.jobPosting.create({
+      return await prisma.jobPosting.create({
         data: {
           positionTitle: args.input.positionTitle,
           company: args.input.company,
@@ -193,19 +183,15 @@ const resolvers = {
         },
       })
 
-      return jobPostingData
+      // return jobPostingData
     },
 
     createSkill: async (_, args) => {
-      let skillData = {}
-
-      skillData.skill = await prisma.skill.create({
+      return await prisma.skill.create({
         data: {
-          name: args.input.name,
+          name: args.name,
         },
       })
-
-      return skillData
     },
 
     registerUser: async (_, { email, password }, ctx) => {
