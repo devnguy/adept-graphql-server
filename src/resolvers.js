@@ -459,6 +459,20 @@ const resolvers = {
       })
     },
 
+    deleteSkill: async (_, { skillId }) => {
+      const findSkill = await prisma.skill.findUnique({
+        where: { skillId: skillId },
+      })
+
+      if (!findSkill) throw new Error('That skill does not exist')
+
+      const skill = await prisma.skill.delete({
+        where: { skillId: skillId },
+      })
+
+      return skill
+    },
+
     deleteSchool: async (_, { schoolId }) => {
       const findSchool = await prisma.school.findUnique({
         where: { schoolId: schoolId },

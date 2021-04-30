@@ -192,6 +192,7 @@ const typeDefs = gql`
     deleteJobPosting(jobPostId: ID!): JobPosting!
 
     createSkill(name: String!): Skill!
+    deleteSkill(skillId: ID!): Skill!
 
     deleteSchool(schoolId: ID!): School!
     deleteWorkExperience(workExpId: ID!): WorkExperience!
