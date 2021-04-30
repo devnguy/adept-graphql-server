@@ -159,6 +159,7 @@ const resolvers = {
     deleteUser: async (_, { userId }) => {
       // TODO: Deleting a user deletes associated job apps/posts
 
+      // Finding out if user exists
       const findUser = await prisma.user.findUnique({
         where: { userId: userId },
       })
@@ -190,6 +191,7 @@ const resolvers = {
     },
 
     deleteSkillFromUser: async (_, { userId, skillId }) => {
+      // Finding out if user exists
       const findUser = await prisma.user.findUnique({
         where: { userId: userId },
       })
@@ -338,6 +340,7 @@ const resolvers = {
     },
 
     deleteJobApplication: async (_, { jobAppId }) => {
+      // Finding out if job application exists
       const findJobApp = await prisma.jobApplication.findUnique({
         where: { jobAppId: jobAppId },
       })
@@ -387,6 +390,7 @@ const resolvers = {
 
       if (!findJobPost) throw new Error('That job posting does not exist')
 
+      // Delete associated job applications
       const deleteJobApps = await prisma.jobApplication.deleteMany({
         where: { jobPostId: jobPostId },
       })
