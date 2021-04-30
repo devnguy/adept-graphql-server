@@ -163,7 +163,8 @@ const typeDefs = gql`
     searchJobPostings(
       positionTitle: String
       company: String
-      location: String
+      city: String
+      state: String
     ): [JobPosting!]!
     getSkillById(skillId: ID!): Skill
     getAllSkills: [Skill!]!

@@ -2,6 +2,7 @@ const DateScalar = require('./DateScalar')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const { prisma } = require('./db')
+const { loc } = require('./schema')
 
 // Using to store data until db is set up
 const tempData = []
@@ -28,9 +29,13 @@ const resolvers = {
       return user
     },
 
-    searchUsers: async (_, args) => {
+    searchUsers: async (_, { name }) => {
       return await prisma.user.findMany({
-        where: { name: args.name },
+        where: {
+          name: {
+            contains: name,
+          },
+        },
 
         include: {
           skills: true,
@@ -100,7 +105,45 @@ const resolvers = {
       })
     },
 
-    // TODO: searchJobPostings
+    searchJobPostings: async (_, { positionTitle, company, city, state }) => {
+      return await prisma.jobPosting.findMany({
+        where: {
+          OR: [
+            {
+              positionTitle: {
+                contains: positionTitle,
+              },
+            },
+            {
+              AND: {
+                company: {
+                  contains: company,
+                },
+              },
+            },
+            {
+              AND: {
+                city: {
+                  contains: city,
+                },
+              },
+            },
+            {
+              AND: {
+                state: {
+                  contains: state,
+                },
+              },
+            },
+          ],
+        },
+
+        include: {
+          skillsRequired: true,
+          applicants: true,
+        },
+      })
+    },
 
     getSkillById: async (_, { skillId }) => {
       const skill = await prisma.skill.findUnique({
