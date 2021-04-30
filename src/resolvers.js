@@ -19,6 +19,7 @@ const resolvers = {
           jobApplications: true,
           jobPostings: true,
           contacts: true,
+          resume: true,
         },
       })
 
@@ -156,6 +157,8 @@ const resolvers = {
     },
 
     deleteUser: async (_, { userId }) => {
+      // TODO: Deleting a user deletes associated job apps/posts
+
       const findUser = await prisma.user.findUnique({
         where: { userId: userId },
       })
@@ -249,6 +252,72 @@ const resolvers = {
       })
     },
 
+    /**
+     * Working on this
+     */
+    // addSchoolToResume: async (_, { input }) => {
+    //   let resume
+
+    //   const school = await prisma.school.create({
+    //     data: {
+    //       name: input.name,
+    //       degree: input.degree,
+    //       startDate: input.startDate,
+    //       endDate: input.endDate,
+    //       major: input.major,
+    //       gpa: input.gpa,
+    //     },
+    //   })
+
+    //   const user = await prisma.user.findUnique({
+    //     where: { userId: input.userId },
+    //   })
+
+    //   if (!user.resume) {
+    //     resume = await prisma.resume.create({
+    //       data: {
+    //         schoolId: school.schoolId,
+    //       },
+
+    //       include: {
+    //         education: true,
+    //         workExperience: true,
+    //       },
+    //     })
+    //   } else {
+    //     resume = await prisma.resume.update({
+    //       where: { userId: input.userId },
+
+    //       data: {
+    //         school: {
+    //           connect: [{ schoolId: school.schoolId }],
+    //         },
+    //       },
+    //     })
+    //   }
+
+    //   // const updatedResume = await prisma.resume.update({
+    //   //   where: { resumeId: resume.resumeId },
+
+    //   //   data: {
+    //   //     school: {
+    //   //       connect: [{ schoolId: school.schoolId }],
+    //   //     },
+    //   //   },
+    //   // })
+
+    //   return await prisma.user.findUnique({
+    //     where: { userId: input.userId },
+
+    //     include: {
+    //       skills: true,
+    //       jobApplications: true,
+    //       jobPostings: true,
+    //       contacts: true,
+    //     },
+    //   })
+    // },
+
     createJobApplication: async (_, args) => {
       return await prisma.jobApplication.create({
         data: {
@@ -265,6 +334,18 @@ const resolvers = {
           user: true,
           jobPosting: true,
         },
+      })
+    },
+
+    deleteJobApplication: async (_, { jobAppId }) => {
+      const findJobApp = await prisma.jobApplication.findUnique({
+        where: { jobAppId: jobAppId },
+      })
+
+      if (!findJobApp) throw new Error('That job application does not exist')
+
+      return await prisma.jobApplication.delete({
+        where: { jobAppId: jobAppId },
       })
     },
 
@@ -296,6 +377,22 @@ const resolvers = {
           skillsRequired: true,
           postedBy: true,
         },
+      })
+    },
+
+    deleteJobPosting: async (_, { jobPostId }) => {
+      const findJobPost = await prisma.jobPosting.findUnique({
+        where: { jobPostId: jobPostId },
+      })
+
+      if (!findJobPost) throw new Error('That job posting does not exist')
+
+      const deleteJobApps = await prisma.jobApplication.deleteMany({
+        where: { jobPostId: jobPostId },
+      })
+
+      return await prisma.jobPosting.delete({
+        where: { jobPostId: jobPostId },
       })
     },
 
@@ -388,12 +485,12 @@ const resolvers = {
   },
 
   JobPosting: {
-    skillsRequired: async (parent) => {
-      // Finding skills for job posting
-      return await prisma.skill.findMany({
-        where: { skillId: parent.skillId },
-      })
-    },
+    // skillsRequired: async (parent) => {
+    //   // Finding skills for job posting
+    //   return await prisma.skill.findMany({
+    //     where: { skillId: parent.skillId },
+    //   })
+    // },
 
     postedBy: async (parent) => {
       // Finding user who created job post

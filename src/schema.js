@@ -108,8 +108,8 @@ const typeDefs = gql`
     userId: ID!
     name: String!
     degree: String!
-    startDate: Int!
-    endDate: Int!
+    startDate: Date!
+    endDate: Date!
     major: String!
     gpa: Float
   }
@@ -118,8 +118,8 @@ const typeDefs = gql`
     userId: ID!
     company: String!
     position: String!
-    startDate: Int!
-    endDate: Int
+    startDate: Date!
+    endDate: Date
     isCurrentPosition: Boolean!
     city: String
     state: String
@@ -184,15 +184,16 @@ const typeDefs = gql`
     addWorkExperienceToResume(input: AddWorkExperienceInput!): User!
 
     createJobApplication(input: CreateJobApplicationInput!): JobApplication!
-    deleteJobApplication(id: ID!): ID!
+    deleteJobApplication(jobAppId: ID!): JobApplication!
 
     createJobPosting(input: CreateJobPostingInput!): JobPosting!
     addJobApplicationToJobPosting(jobAppId: ID!, jobPostId: ID!): JobPosting!
-    deleteJobPosting(id: ID!): ID!
+    deleteJobPosting(jobPostId: ID!): JobPosting!
 
     createSkill(name: String!): Skill!
 
-    deleteSchool(id: ID!): ID!
+    deleteSchool(schoolId: ID!): ID!
+    deleteWorkExperience(workExpId: ID!): ID!
 
     # TODO: Integrate with createUser
     registerUser(email: String!, password: String!): User!
