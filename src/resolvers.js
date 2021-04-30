@@ -166,6 +166,14 @@ const resolvers = {
 
       if (!findUser) throw new Error('That user does not exist')
 
+      const deleteJobApp = await prisma.jobApplication.deleteMany({
+        where: { userId: userId },
+      })
+
+      const deleteJobPost = await prisma.jobPosting.deleteMany({
+        where: { userId: userId },
+      })
+
       return await prisma.user.delete({
         where: { userId: userId },
       })
@@ -405,6 +413,30 @@ const resolvers = {
         data: {
           name: args.name,
         },
+      })
+    },
+
+    deleteSchool: async (_, { schoolId }) => {
+      const findSchool = await prisma.school.findUnique({
+        where: { schoolId: schoolId },
+      })
+
+      if (!findSchool) throw new Error('That school does not exist')
+
+      return await prisma.school.delete({
+        where: { schoolId: schoolId },
+      })
+    },
+
+    deleteWorkExperience: async (_, { workExpId }) => {
+      const findWorkExp = await prisma.workExperience.findUnique({
+        where: { workExpId: workExpId },
+      })
+
+      if (!findWorkExp) throw new Error('That work experience does not exist')
+
+      return await prisma.workExperience.delete({
+        where: { workExpId: workExpId },
       })
     },
 

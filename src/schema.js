@@ -187,13 +187,13 @@ const typeDefs = gql`
     deleteJobApplication(jobAppId: ID!): JobApplication!
 
     createJobPosting(input: CreateJobPostingInput!): JobPosting!
-    addJobApplicationToJobPosting(jobAppId: ID!, jobPostId: ID!): JobPosting!
+    # addJobApplicationToJobPosting(jobAppId: ID!, jobPostId: ID!): JobPosting!
     deleteJobPosting(jobPostId: ID!): JobPosting!
 
     createSkill(name: String!): Skill!
 
-    deleteSchool(schoolId: ID!): ID!
-    deleteWorkExperience(workExpId: ID!): ID!
+    deleteSchool(schoolId: ID!): School!
+    deleteWorkExperience(workExpId: ID!): WorkExperience!
 
     # TODO: Integrate with createUser
     registerUser(email: String!, password: String!): User!
