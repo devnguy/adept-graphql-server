@@ -45,12 +45,12 @@ const typeDefs = gql`
     name: String!
   }
 
-  type School {
-    schoolId: ID!
+  type Education {
+    educationId: ID!
     name: String!
     degree: String!
-    startDate: Int!
-    endDate: Int!
+    startDate: Float!
+    endDate: Float!
     major: String!
     gpa: Float
   }
@@ -59,8 +59,8 @@ const typeDefs = gql`
     workExpId: ID!
     company: String!
     position: String!
-    startDate: Int!
-    endDate: Int
+    startDate: Float!
+    endDate: Float
     isCurrentPosition: Boolean!
     city: String
     state: String
@@ -69,7 +69,7 @@ const typeDefs = gql`
 
   type Resume {
     resumeId: ID!
-    education: [School!]!
+    education: [Education!]!
     workExperience: [WorkExperience!]!
   }
 
@@ -104,7 +104,7 @@ const typeDefs = gql`
     state: String!
   }
 
-  input AddSchoolInput {
+  input AddEducationToResumeInput {
     userId: ID!
     name: String!
     degree: String!
@@ -114,7 +114,7 @@ const typeDefs = gql`
     gpa: Float
   }
 
-  input AddWorkExperienceInput {
+  input AddWorkExperienceToResumeInput {
     userId: ID!
     company: String!
     position: String!
@@ -172,25 +172,25 @@ const typeDefs = gql`
   type Mutation {
     createUser(input: CreateUserInput!): CreateUserResponse
     updateUserLocation(input: UpdateUserLocationInput!): User!
-    deleteUser(userId: ID!): User!
+    deleteUser(userId: ID!): ID!
     addSkillToUser(userId: ID!, skillId: ID!): User!
     deleteSkillFromUser(userId: ID!, skillId: ID!): User!
     addContactToUser(userId: ID!, contactId: ID!): User!
     removeContactFromUser(userId: ID!, contactId: ID!): User!
-    addSchoolToResume(input: AddSchoolInput!): User!
-    addWorkExperienceToResume(input: AddWorkExperienceInput!): User!
+    addEducationToResume(input: AddEducationToResumeInput!): User!
+    addWorkExperienceToResume(input: AddWorkExperienceToResumeInput!): User!
 
     createJobApplication(input: CreateJobApplicationInput!): JobApplication!
-    deleteJobApplication(jobAppId: ID!): JobApplication!
+    deleteJobApplication(jobAppId: ID!): ID!
 
     createJobPosting(input: CreateJobPostingInput!): JobPosting!
-    deleteJobPosting(jobPostId: ID!): JobPosting!
+    deleteJobPosting(jobPostId: ID!): ID!
 
     createSkill(name: String!): Skill!
-    deleteSkill(skillId: ID!): Skill!
+    deleteSkill(skillId: ID!): ID!
 
-    deleteSchool(schoolId: ID!): School!
-    deleteWorkExperience(workExpId: ID!): WorkExperience!
+    deleteEducation(educationId: ID!): ID!
+    deleteWorkExperience(workExpId: ID!): ID!
 
     # TODO: Integrate with createUser
     registerUser(email: String!, password: String!): User!

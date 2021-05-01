@@ -57,12 +57,12 @@ model Skill {
   @@unique([name])
 }
 
-model School {
-  schoolId  String @id @default(uuid())
+model Education {
+  educationId  String @id @default(uuid())
   name      String
   degree    String
-  startDate Int
-  endDate   Int?
+  startDate DateTime
+  endDate   DateTime?
   major     String
   gpa       Float?
   Resume    Resume @relation(fields: [resumeId], references: [resumeId])
@@ -73,8 +73,8 @@ model WorkExperience {
   workExpId         String  @id @default(uuid())
   company           String
   position          String
-  startDate         Int
-  endDate           Int?
+  startDate         DateTime
+  endDate           DateTime?
   isCurrentPosition Boolean
   city              String?
   state             String?
@@ -85,7 +85,7 @@ model WorkExperience {
 
 model Resume {
   resumeId       String           @id @default(uuid())
-  education      School[]
+  education      Education[]
   workExperience WorkExperience[]
   User           User             @relation(fields: [userId], references: [userId])
   userId         String

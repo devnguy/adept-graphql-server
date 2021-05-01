@@ -2,7 +2,6 @@ const DateScalar = require('./DateScalar')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const { prisma } = require('./db')
-const { loc } = require('./schema')
 
 // Using to store data until db is set up
 const tempData = []
@@ -154,6 +153,9 @@ const resolvers = {
           email: input.email,
           type: input.type,
           password: input.password,
+          resume: {
+            create: {},
+          },
         },
       })
     },
@@ -180,26 +182,49 @@ const resolvers = {
     },
 
     deleteUser: async (_, { userId }) => {
-      // TODO: Deleting a user deletes associated job apps/posts
-
       // Finding out if user exists
       const findUser = await prisma.user.findUnique({
         where: { userId: userId },
+
+        include: {
+          resume: true,
+        },
       })
 
       if (!findUser) throw new Error('That user does not exist')
 
+      // Deleting job applications associated with the user
       const deleteJobApp = await prisma.jobApplication.deleteMany({
         where: { userId: userId },
       })
 
+      // Deleting job postings associated with the user
       const deleteJobPost = await prisma.jobPosting.deleteMany({
         where: { userId: userId },
       })
 
-      return await prisma.user.delete({
+      // Deleting all education and work experience related to user's resume
+      const resume = await prisma.resume.update({
+        where: { resumeId: findUser.resume.resumeId },
+        data: {
+          education: {
+            deleteMany: {},
+          },
+          workExperience: {
+            deleteMany: {},
+          },
+        },
+      })
+
+      const deleteResume = await prisma.resume.delete({
+        where: { resumeId: findUser.resume.resumeId },
+      })
+
+      const user = await prisma.user.delete({
         where: { userId: userId },
       })
+
+      return user.userId
     },
 
     addSkillToUser: async (_, { userId, skillId }) => {
@@ -285,71 +310,83 @@ const resolvers = {
       })
     },
 
-    /**
-     * Working on this
-     */
-    // addSchoolToResume: async (_, { input }) => {
-    //   let resume
+    addEducationToResume: async (_, { input }) => {
+      // Finding if user exists
+      const user = await prisma.user.findUnique({
+        where: { userId: input.userId },
 
-    //   const school = await prisma.school.create({
-    //     data: {
-    //       name: input.name,
-    //       degree: input.degree,
-    //       startDate: input.startDate,
-    //       endDate: input.endDate,
-    //       major: input.major,
-    //       gpa: input.gpa,
-    //     },
-    //   })
+        include: {
+          resume: true,
+        },
+      })
 
-    //   const user = await prisma.user.findUnique({
-    //     where: { userId: input.userId },
-    //   })
+      if (!user) throw new Error('That user does not exist')
 
-    //   if (!user.resume) {
-    //     resume = await prisma.resume.create({
-    //       data: {
-    //         schoolId: school.schoolId,
-    //       },
+      // Creating education and connecting it to resume
+      const education = await prisma.education.create({
+        data: {
+          name: input.name,
+          degree: input.degree,
+          startDate: input.startDate,
+          endDate: input.endDate,
+          major: input.major,
+          gpa: input.gpa,
+          resumeId: user.resume.resumeId,
+        },
+      })
 
-    //       include: {
-    //         education: true,
-    //         workExperience: true,
-    //       },
-    //     })
-    //   } else {
-    //     resume = await prisma.resume.update({
-    //       where: { userId: input.userId },
+      return await prisma.user.findUnique({
+        where: { userId: input.userId },
 
-    //       data: {
-    //         school: {
-    //           connect: [{ schoolId: school.schoolId }],
-    //         },
-    //       },
-    //     })
-    //   }
+        include: {
+          skills: true,
+          jobApplications: true,
+          jobPostings: true,
+          contacts: true,
+          resume: true,
+        },
+      })
+    },
 
-    //   // const updatedResume = await prisma.resume.update({
-    //   //   where: { resumeId: resume.resumeId },
+    addWorkExperienceToResume: async (_, { input }) => {
+      // Finding if user exists
+      const user = await prisma.user.findUnique({
+        where: { userId: input.userId },
 
-    //   //   data: {
-    //   //     school: {
-    //   //       connect: [{ schoolId: school.schoolId }],
-    //   //     },
-    //   //   },
-    //   // })
+        include: {
+          resume: true,
+        },
+      })
 
-    //   return await prisma.user.findUnique({
-    //     where: { userId: input.userId },
+      if (!user) throw new Error('That user does not exist')
 
-    //     include: {
-    //       skills: true,
-    //       jobApplications: true,
-    //       jobPostings: true,
-    //       contacts: true,
-    //     },
-    //   })
-    // },
+      // Creating work experience and connecting it to resume
+      const workExperience = await prisma.workExperience.create({
+        data: {
+          company: input.company,
+          position: input.position,
+          startDate: input.startDate,
+          endDate: input.endDate,
+          isCurrentPosition: input.isCurrentPosition,
+          city: input.city,
+          state: input.state,
+          description: input.description,
+          resumeId: user.resume.resumeId,
+        },
+      })
+
+      return await prisma.user.findUnique({
+        where: { userId: input.userId },
+
+        include: {
+          skills: true,
+          jobApplications: true,
+          jobPostings: true,
+          contacts: true,
+          resume: true,
+        },
+      })
+    },
 
     createJobApplication: async (_, { input }) => {
       return await prisma.jobApplication.create({
@@ -378,9 +415,11 @@ const resolvers = {
 
       if (!findJobApp) throw new Error('That job application does not exist')
 
-      return await prisma.jobApplication.delete({
+      const jobApplication = await prisma.jobApplication.delete({
         where: { jobAppId: jobAppId },
       })
+
+      return jobApplication.jobAppId
     },
 
     createJobPosting: async (_, { input }) => {
@@ -426,9 +465,11 @@ const resolvers = {
         where: { jobPostId: jobPostId },
       })
 
-      return await prisma.jobPosting.delete({
+      const jobPosting = await prisma.jobPosting.delete({
         where: { jobPostId: jobPostId },
       })
+
+      return jobPosting.jobPostId
     },
 
     createSkill: async (_, { name }) => {
@@ -450,19 +491,21 @@ const resolvers = {
         where: { skillId: skillId },
       })
 
-      return skill
+      return skill.skillId
     },
 
-    deleteSchool: async (_, { schoolId }) => {
-      const findSchool = await prisma.school.findUnique({
-        where: { schoolId: schoolId },
+    deleteEducation: async (_, { educationId }) => {
+      const findEducation = await prisma.education.findUnique({
+        where: { educationId: educationId },
       })
 
-      if (!findSchool) throw new Error('That school does not exist')
+      if (!findEducation) throw new Error('That education does not exist')
 
-      return await prisma.school.delete({
-        where: { schoolId: schoolId },
+      const education = await prisma.education.delete({
+        where: { educationId: educationId },
       })
+
+      return education.educationId
     },
 
     deleteWorkExperience: async (_, { workExpId }) => {
@@ -472,9 +515,11 @@ const resolvers = {
 
       if (!findWorkExp) throw new Error('That work experience does not exist')
 
-      return await prisma.workExperience.delete({
+      const workExperience = await prisma.workExperience.delete({
         where: { workExpId: workExpId },
       })
+
+      return workExperience.workExpId
     },
 
     registerUser: async (_, { email, password }, ctx) => {
@@ -529,12 +574,6 @@ const resolvers = {
         where: { userId: parent.userId },
       })
     },
-
-    // resume: async (parent) => {
-    //   return await prisma.resume.findMany({
-    //     where: { userId: parent.userId },
-    //   })
-    // },
   },
 
   JobApplication: {
@@ -562,7 +601,7 @@ const resolvers = {
 
   Resume: {
     education: async (parent) => {
-      return await prisma.school.findMany({
+      return await prisma.education.findMany({
         where: { resumeId: parent.resumeId },
       })
     },
