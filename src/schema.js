@@ -156,8 +156,6 @@ const typeDefs = gql`
     currentUser: User!
     getJobApplicationById(jobAppId: ID!): JobApplication
     getAllJobApplications: [JobApplication!]!
-    # getAllJobApplicationsByUser(userId: ID!): [JobApplication!]!
-    # getAllJobApplicationsForJobPosting(jobPostId: ID!): [JobApplication!]!
     getJobPostingById(jobPostId: ID!): JobPosting
     getAllJobPostings: [JobPosting!]!
     searchJobPostings(
@@ -177,8 +175,6 @@ const typeDefs = gql`
     deleteUser(userId: ID!): User!
     addSkillToUser(userId: ID!, skillId: ID!): User!
     deleteSkillFromUser(userId: ID!, skillId: ID!): User!
-    # addJobApplicationToUser(userId: ID!, jopAppId: ID!): User!
-    # addJobPostingToUser(userId: ID!, jobPostingId: ID!): User!
     addContactToUser(userId: ID!, contactId: ID!): User!
     removeContactFromUser(userId: ID!, contactId: ID!): User!
     addSchoolToResume(input: AddSchoolInput!): User!
@@ -188,7 +184,6 @@ const typeDefs = gql`
     deleteJobApplication(jobAppId: ID!): JobApplication!
 
     createJobPosting(input: CreateJobPostingInput!): JobPosting!
-    # addJobApplicationToJobPosting(jobAppId: ID!, jobPostId: ID!): JobPosting!
     deleteJobPosting(jobPostId: ID!): JobPosting!
 
     createSkill(name: String!): Skill!
