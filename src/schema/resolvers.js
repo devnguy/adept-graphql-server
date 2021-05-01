@@ -1,7 +1,7 @@
 const DateScalar = require('./DateScalar')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
-const { prisma } = require('./db')
+const { prisma } = require('../lib/db')
 
 // Using to store data until db is set up
 const tempData = []
