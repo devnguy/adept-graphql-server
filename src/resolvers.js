@@ -87,6 +87,8 @@ const resolvers = {
     searchJobPostings: async (_, { positionTitle, company, city, state }) => {
       return await prisma.jobPosting.findMany({
         where: {
+          // Finding any job postings containing the input from user
+          // for positionTitle, company, city, or state
           OR: [
             {
               positionTitle: {
@@ -153,6 +155,7 @@ const resolvers = {
           email: input.email,
           type: input.type,
           password: input.password,
+          // Creating empty resume
           resume: {
             create: {},
           },
@@ -216,6 +219,7 @@ const resolvers = {
         },
       })
 
+      // Deleting user's resume
       const deleteResume = await prisma.resume.delete({
         where: { resumeId: findUser.resume.resumeId },
       })
@@ -392,9 +396,11 @@ const resolvers = {
       return await prisma.jobApplication.create({
         data: {
           user: {
+            // Connecting to user who submitted job application
             connect: { userId: input.userId },
           },
           jobPosting: {
+            // Connecting to job user applied for
             connect: { jobPostId: input.jobPostId },
           },
           dateApplied: input.dateApplied,
@@ -442,6 +448,7 @@ const resolvers = {
             connect: skillIds,
           },
           postedBy: {
+            // Connecting job post to user who created it
             connect: { userId: input.postedBy },
           },
         },
