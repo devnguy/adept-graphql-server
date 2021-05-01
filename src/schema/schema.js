@@ -84,14 +84,14 @@ const typeDefs = gql`
     INTERNSHIP
   }
 
-  input CreateUserInput {
+  input registerUserInput {
     name: String!
     email: String!
     type: UserType!
     password: String!
   }
 
-  type CreateUserResponse {
+  type registerUserResponse {
     userId: ID!
     name: String!
     email: String!
@@ -170,7 +170,8 @@ const typeDefs = gql`
   }
 
   type Mutation {
-    createUser(input: CreateUserInput!): CreateUserResponse
+    registerUser(input: registerUserInput!): registerUserResponse
+    loginUser(email: String!, password: String!): LoginUserResponse
     updateUserLocation(input: UpdateUserLocationInput!): User!
     deleteUser(userId: ID!): ID!
     addSkillToUser(userId: ID!, skillId: ID!): User!
@@ -191,10 +192,6 @@ const typeDefs = gql`
 
     deleteEducation(educationId: ID!): ID!
     deleteWorkExperience(workExpId: ID!): ID!
-
-    # TODO: Integrate with createUser
-    registerUser(email: String!, password: String!): User!
-    loginUser(email: String!, password: String!): LoginUserResponse
   }
 `
 

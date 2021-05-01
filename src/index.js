@@ -1,10 +1,18 @@
 const { ApolloServer } = require('apollo-server')
 const typeDefs = require('./schema/schema')
 const resolvers = require('./schema/resolvers')
+const getUser = require('./auth')
 
 require('dotenv').config()
 
-const server = new ApolloServer({ typeDefs, resolvers })
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  context: ({ req }) => ({
+    user: getUser(req),
+  }),
+})
+
 server.listen().then(() => {
   console.log(`
     🚀  Server is running!
