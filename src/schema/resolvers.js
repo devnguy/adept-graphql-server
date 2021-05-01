@@ -33,6 +33,9 @@ const resolvers = {
           email: input.email,
           type: input.type,
           password: hash,
+          resume: {
+            create: {},
+          },
         },
       })
     },
@@ -109,7 +112,7 @@ const resolvers = {
     },
 
     loginUser: async (_, { email, password }, ctx) => {
-      const user = await prisma.user.findFirst({
+      const user = await prisma.user.findUnique({
         where: { email },
       })
 
