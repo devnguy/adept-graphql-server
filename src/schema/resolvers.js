@@ -14,6 +14,7 @@ const resolvers = {
       const user = await prisma.user.findUnique({
         where: { userId: userId },
 
+        // Include the relationship data
         include: {
           skills: true,
           jobApplications: true,
