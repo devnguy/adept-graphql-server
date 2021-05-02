@@ -45,12 +45,12 @@ const typeDefs = gql`
     name: String!
   }
 
-  type School {
-    schoolId: ID!
+  type Education {
+    educationId: ID!
     name: String!
     degree: String!
-    startDate: Int!
-    endDate: Int!
+    startDate: Float!
+    endDate: Float!
     major: String!
     gpa: Float
   }
@@ -59,8 +59,8 @@ const typeDefs = gql`
     workExpId: ID!
     company: String!
     position: String!
-    startDate: Int!
-    endDate: Int
+    startDate: Float!
+    endDate: Float
     isCurrentPosition: Boolean!
     city: String
     state: String
@@ -69,7 +69,7 @@ const typeDefs = gql`
 
   type Resume {
     resumeId: ID!
-    education: [School!]!
+    education: [Education!]!
     workExperience: [WorkExperience!]!
   }
 
@@ -98,105 +98,38 @@ const typeDefs = gql`
     type: UserType!
   }
 
-  type DeleteUserResponse {
-    userId: ID!
-  }
-
   input UpdateUserLocationInput {
     userId: ID!
     city: String!
     state: String!
   }
 
-  type UpdateUserLocationResponse {
-    user: User!
-  }
-
-  input AddSkillToUserInput {
-    userId: ID!
-    skillId: ID!
-  }
-
-  type AddSkillToUserResponse {
-    user: User!
-  }
-
-  input DeleteSkillFromUserInput {
-    userId: ID!
-    skillId: ID!
-  }
-
-  type DeleteSkillFromUserResponse {
-    user: User!
-  }
-
-  input AddJobApplicationToUserInput {
-    userId: ID!
-    jobApplicationId: ID!
-  }
-
-  type AddJobApplicationToUserResponse {
-    user: User!
-  }
-
-  input AddJobPostingToUserInput {
-    userId: ID!
-    jobPostingId: ID!
-  }
-
-  type AddJobPostingToUserResponse {
-    user: User!
-  }
-
-  input AddContactToUserInput {
-    userId: ID!
-    contactId: ID!
-  }
-
-  type AddContactToUserResponse {
-    user: User!
-  }
-
-  input AddSchoolInput {
+  input AddEducationToResumeInput {
     userId: ID!
     name: String!
     degree: String!
-    startDate: Int!
-    endDate: Int!
+    startDate: Date!
+    endDate: Date!
     major: String!
     gpa: Float
   }
 
-  type AddSchoolToResumeResponse {
-    user: User!
-  }
-
-  input AddWorkExperienceInput {
+  input AddWorkExperienceToResumeInput {
     userId: ID!
     company: String!
     position: String!
-    startDate: Int!
-    endDate: Int
+    startDate: Date!
+    endDate: Date
     isCurrentPosition: Boolean!
     city: String
     state: String
     description: String!
   }
 
-  type AddWorkExperienceToResumeResponse {
-    user: User!
-  }
-
   input CreateJobApplicationInput {
-    jobPostingId: ID!
-  }
-
-  type CreateJobApplicationResponse {
-    jobApplication: JobApplication!
-  }
-
-  type DeleteJobApplicationResponse {
-    deletedJobApplicationId: ID!
+    jobPostId: ID!
+    userId: ID!
+    dateApplied: Date
   }
 
   input CreateJobPostingInput {
@@ -212,95 +145,53 @@ const typeDefs = gql`
     postedBy: ID!
   }
 
-  type CreateJobPostingResponse {
-    jobPosting: JobPosting!
-  }
-
-  input AddJobApplicationToJobPostingInput {
-    jobApplicationId: ID!
-    jobPostingId: ID!
-  }
-
-  type AddJobApplicationToJobPostingResponse {
-    jobPosting: JobPosting!
-  }
-
-  type DeleteJobPostingResponse {
-    deletedJobPostingId: ID!
-  }
-
-  input CreateSkillInput {
-    name: String!
-  }
-
-  type CreateSkillResponse {
-    skill: Skill!
-  }
-
-  type DeleteSchoolResponse {
-    deletedSchoolId: ID!
-  }
-
   type LoginUserResponse {
     token: String
     user: User
   }
 
   type Query {
-    getUserById(id: ID!): User
+    getUserById(userId: ID!): User
     searchUsers(name: String): [User!]!
     currentUser: User!
-    getJobApplicationById(id: ID!): JobApplication
+    getJobApplicationById(jobAppId: ID!): JobApplication
     getAllJobApplications: [JobApplication!]!
-    getJobPostingById(id: ID!): JobPosting
+    getJobPostingById(jobPostId: ID!): JobPosting
     getAllJobPostings: [JobPosting!]!
     searchJobPostings(
       positionTitle: String
       company: String
-      location: String
+      city: String
+      state: String
     ): [JobPosting!]!
+    getSkillById(skillId: ID!): Skill
     getAllSkills: [Skill!]!
-    getSkillById(id: ID!): Skill
     searchSkills(name: String): [Skill!]!
   }
 
   type Mutation {
     registerUser(input: registerUserInput!): registerUserResponse
     loginUser(email: String!, password: String!): LoginUserResponse
-    updateUserLocation(
-      input: UpdateUserLocationInput!
-    ): UpdateUserLocationResponse
-    deleteUser(id: ID!): DeleteUserResponse
-    addSkillToUser(input: AddSkillToUserInput!): AddSkillToUserResponse
-    deleteSkillFromUser(
-      input: DeleteSkillFromUserInput!
-    ): DeleteSkillFromUserResponse
-    addJobApplicationToUser(
-      input: AddJobApplicationToUserInput!
-    ): AddJobApplicationToUserResponse
-    addJobPostingToUser(
-      input: AddJobPostingToUserInput!
-    ): AddJobPostingToUserResponse
-    addContactToUser(input: AddContactToUserInput): AddContactToUserResponse
-    addSchoolToResume(input: AddSchoolInput!): AddSchoolToResumeResponse
-    addWorkExperienceToResume(
-      input: AddWorkExperienceInput!
-    ): AddWorkExperienceToResumeResponse
+    updateUserLocation(input: UpdateUserLocationInput!): User!
+    deleteUser(userId: ID!): ID!
+    addSkillToUser(userId: ID!, skillId: ID!): User!
+    deleteSkillFromUser(userId: ID!, skillId: ID!): User!
+    addContactToUser(userId: ID!, contactId: ID!): User!
+    removeContactFromUser(userId: ID!, contactId: ID!): User!
+    addEducationToResume(input: AddEducationToResumeInput!): User!
+    addWorkExperienceToResume(input: AddWorkExperienceToResumeInput!): User!
 
-    createJobApplication(
-      input: CreateJobApplicationInput!
-    ): CreateJobApplicationResponse
-    deleteJobApplication(id: ID!): DeleteJobApplicationResponse
+    createJobApplication(input: CreateJobApplicationInput!): JobApplication!
+    deleteJobApplication(jobAppId: ID!): ID!
 
-    createJobPosting(input: CreateJobPostingInput!): CreateJobPostingResponse
-    addJobApplicationToJobPosting(
-      input: AddJobApplicationToJobPostingInput!
-    ): AddJobApplicationToJobPostingResponse
-    deleteJobPosting(id: ID!): DeleteJobPostingResponse
+    createJobPosting(input: CreateJobPostingInput!): JobPosting!
+    deleteJobPosting(jobPostId: ID!): ID!
 
-    createSkill(input: CreateSkillInput!): CreateSkillResponse
+    createSkill(name: String!): Skill!
+    deleteSkill(skillId: ID!): ID!
 
-    deleteSchool(id: ID!): DeleteSchoolResponse
+    deleteEducation(educationId: ID!): ID!
+    deleteWorkExperience(workExpId: ID!): ID!
   }
 `
 
