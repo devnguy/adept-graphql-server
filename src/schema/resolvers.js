@@ -8,7 +8,7 @@ const resolvers = {
 
   Query: {
     getUserById: async (_, { userId }) => {
-      const user = await prisma.user.findUnique({
+      return await prisma.user.findUnique({
         where: { userId: userId },
 
         // Include the relationship data
@@ -20,10 +20,6 @@ const resolvers = {
           resume: true,
         },
       })
-
-      if (!user) throw new Error('That user does not exist')
-
-      return user
     },
 
     searchUsers: async (_, { name }) => {
@@ -44,14 +40,9 @@ const resolvers = {
     },
 
     getJobApplicationById: async (_, { jobAppId }) => {
-      const jobApplication = await prisma.jobApplication.findUnique({
+      return await prisma.jobApplication.findUnique({
         where: { jobAppId: jobAppId },
       })
-
-      if (!jobApplication)
-        throw new Error('That job application does not exist')
-
-      return jobApplication
     },
 
     getAllJobApplications: async () => {
@@ -59,7 +50,7 @@ const resolvers = {
     },
 
     getJobPostingById: async (_, { jobPostId }) => {
-      const jobPosting = await prisma.jobPosting.findUnique({
+      return await prisma.jobPosting.findUnique({
         where: { jobPostId: jobPostId },
 
         include: {
@@ -67,10 +58,6 @@ const resolvers = {
           applicants: true,
         },
       })
-
-      if (!jobPosting) throw new Error('That job posting does not exist')
-
-      return jobPosting
     },
 
     getAllJobPostings: async () => {
@@ -125,13 +112,9 @@ const resolvers = {
     },
 
     getSkillById: async (_, { skillId }) => {
-      const skill = await prisma.skill.findUnique({
+      return await prisma.skill.findUnique({
         where: { skillId: skillId },
       })
-
-      if (!skill) throw new Error('That skill does not exist')
-
-      return skill
     },
 
     getAllSkills: async () => {
@@ -230,6 +213,13 @@ const resolvers = {
     },
 
     addSkillToUser: async (_, { userId, skillId }) => {
+      // Finding out if user exists
+      const findUser = await prisma.user.findUnique({
+        where: { userId: userId },
+      })
+
+      if (!findUser) throw new Error('That user does not exist')
+
       return await prisma.user.update({
         where: { userId: userId },
 
@@ -275,6 +265,18 @@ const resolvers = {
     },
 
     addContactToUser: async (_, { userId, contactId }) => {
+      // Finding out if user exists
+      const findUser = await prisma.user.findUnique({
+        where: { userId: userId },
+      })
+
+      // Finding out if contact exists
+      const findContact = await prisma.user.findUnique({
+        where: { userId: contactId },
+      })
+
+      if (!findUser || !findContact) throw new Error('That user does not exist')
+
       return await prisma.user.update({
         where: { userId: userId },
 
@@ -294,6 +296,18 @@ const resolvers = {
     },
 
     removeContactFromUser: async (_, { userId, contactId }) => {
+      // Finding out if user exists
+      const findUser = await prisma.user.findUnique({
+        where: { userId: userId },
+      })
+
+      // Finding out if contact exists
+      const findContact = await prisma.user.findUnique({
+        where: { userId: contactId },
+      })
+
+      if (!findUser || !findContact) throw new Error('That user does not exist')
+
       return await prisma.user.update({
         where: { userId: userId },
 
@@ -391,6 +405,17 @@ const resolvers = {
     },
 
     createJobApplication: async (_, { input }) => {
+      // Finding if user exists
+      const user = await prisma.user.findUnique({
+        where: { userId: input.userId },
+
+        include: {
+          resume: true,
+        },
+      })
+
+      if (!user) throw new Error('That user does not exist')
+
       return await prisma.jobApplication.create({
         data: {
           user: {
@@ -427,6 +452,17 @@ const resolvers = {
     },
 
     createJobPosting: async (_, { input }) => {
+      // Finding if user exists
+      const user = await prisma.user.findUnique({
+        where: { userId: input.postedBy },
+
+        include: {
+          resume: true,
+        },
+      })
+
+      if (!user) throw new Error('That user does not exist')
+
       // Need to create list of skill objects to connect skills to job posting
       const skillIds = input.skillsRequired.map((skillId) => ({
         skillId,
