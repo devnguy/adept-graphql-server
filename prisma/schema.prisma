@@ -61,8 +61,8 @@ model Education {
   educationId  String @id @default(uuid())
   name      String
   degree    String
-  startDate DateTime
-  endDate   DateTime?
+  startDate String
+  endDate   String
   major     String
   gpa       Float?
   Resume    Resume @relation(fields: [resumeId], references: [resumeId])

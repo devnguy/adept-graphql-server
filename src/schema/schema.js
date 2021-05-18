@@ -49,8 +49,8 @@ const typeDefs = gql`
     educationId: ID!
     name: String!
     degree: String!
-    startDate: Float!
-    endDate: Float!
+    startDate: String!
+    endDate: String!
     major: String!
     gpa: Float
   }
@@ -108,8 +108,8 @@ const typeDefs = gql`
     userId: ID!
     name: String!
     degree: String!
-    startDate: Date!
-    endDate: Date!
+    startDate: String!
+    endDate: String!
     major: String!
     gpa: Float
   }
