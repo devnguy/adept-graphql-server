@@ -22,14 +22,14 @@ const typeDefs = gql`
     jobAppId: ID!
     user: User!
     jobPosting: JobPosting!
-    dateApplied: Date!
+    dateApplied: String!
   }
 
   type JobPosting {
     jobPostId: ID!
     positionTitle: String!
     company: String!
-    datePosted: Date!
+    datePosted: String!
     city: String
     state: String
     salary: Int
@@ -59,8 +59,8 @@ const typeDefs = gql`
     workExpId: ID!
     company: String!
     position: String!
-    startDate: Float!
-    endDate: Float
+    startDate: String!
+    endDate: String
     isCurrentPosition: Boolean!
     city: String
     state: String
@@ -118,8 +118,8 @@ const typeDefs = gql`
     userId: String!
     company: String!
     position: String!
-    startDate: Date!
-    endDate: Date
+    startDate: String!
+    endDate: String
     isCurrentPosition: Boolean!
     city: String
     state: String
@@ -129,13 +129,13 @@ const typeDefs = gql`
   input CreateJobApplicationInput {
     jobPostId: String!
     userId: String!
-    dateApplied: Date
+    dateApplied: String
   }
 
   input CreateJobPostingInput {
     positionTitle: String!
     company: String!
-    datePosted: Date
+    datePosted: String
     city: String
     state: String
     salary: Int
