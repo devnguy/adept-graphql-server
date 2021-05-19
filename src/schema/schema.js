@@ -22,14 +22,14 @@ const typeDefs = gql`
     jobAppId: ID!
     user: User!
     jobPosting: JobPosting!
-    dateApplied: Date!
+    dateApplied: String!
   }
 
   type JobPosting {
     jobPostId: ID!
     positionTitle: String!
     company: String!
-    datePosted: Date!
+    datePosted: String!
     city: String
     state: String
     salary: Int
@@ -49,8 +49,8 @@ const typeDefs = gql`
     educationId: ID!
     name: String!
     degree: String!
-    startDate: Float!
-    endDate: Float!
+    startDate: String!
+    endDate: String!
     major: String!
     gpa: Float
   }
@@ -59,8 +59,8 @@ const typeDefs = gql`
     workExpId: ID!
     company: String!
     position: String!
-    startDate: Float!
-    endDate: Float
+    startDate: String!
+    endDate: String
     isCurrentPosition: Boolean!
     city: String
     state: String
@@ -99,27 +99,27 @@ const typeDefs = gql`
   }
 
   input UpdateUserLocationInput {
-    userId: ID!
+    userId: String!
     city: String!
     state: String!
   }
 
   input AddEducationToResumeInput {
-    userId: ID!
+    userId: String!
     name: String!
     degree: String!
-    startDate: Date!
-    endDate: Date!
+    startDate: String!
+    endDate: String!
     major: String!
     gpa: Float
   }
 
   input AddWorkExperienceToResumeInput {
-    userId: ID!
+    userId: String!
     company: String!
     position: String!
-    startDate: Date!
-    endDate: Date
+    startDate: String!
+    endDate: String
     isCurrentPosition: Boolean!
     city: String
     state: String
@@ -127,15 +127,15 @@ const typeDefs = gql`
   }
 
   input CreateJobApplicationInput {
-    jobPostId: ID!
-    userId: ID!
-    dateApplied: Date
+    jobPostId: String!
+    userId: String!
+    dateApplied: String
   }
 
   input CreateJobPostingInput {
     positionTitle: String!
     company: String!
-    datePosted: Date
+    datePosted: String
     city: String
     state: String
     salary: Int
