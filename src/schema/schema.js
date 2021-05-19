@@ -99,13 +99,13 @@ const typeDefs = gql`
   }
 
   input UpdateUserLocationInput {
-    userId: ID!
+    userId: String!
     city: String!
     state: String!
   }
 
   input AddEducationToResumeInput {
-    userId: ID!
+    userId: String!
     name: String!
     degree: String!
     startDate: String!
@@ -115,7 +115,7 @@ const typeDefs = gql`
   }
 
   input AddWorkExperienceToResumeInput {
-    userId: ID!
+    userId: String!
     company: String!
     position: String!
     startDate: Date!
@@ -127,8 +127,8 @@ const typeDefs = gql`
   }
 
   input CreateJobApplicationInput {
-    jobPostId: ID!
-    userId: ID!
+    jobPostId: String!
+    userId: String!
     dateApplied: Date
   }
 
