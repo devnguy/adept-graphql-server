@@ -73,8 +73,8 @@ model WorkExperience {
   workExpId         String  @id @default(uuid())
   company           String
   position          String
-  startDate         DateTime
-  endDate           DateTime?
+  startDate         String
+  endDate           String?
   isCurrentPosition Boolean
   city              String?
   state             String?
