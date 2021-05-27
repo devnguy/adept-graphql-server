@@ -55,7 +55,17 @@ const resolvers = {
 
         include: {
           skillsRequired: true,
-          applicants: true,
+          // wtf even is this
+          applicants: {
+            include: {
+              user: {
+                include: {
+                  skills: true,
+                },
+              },
+            },
+          },
+          //////////////////
         },
       })
     },
@@ -626,6 +636,18 @@ const resolvers = {
         where: { userId: parent.userId },
       })
     },
+    // is this needed?
+    skillsRequired: async (parent) => {
+      return await prisma.skill.findMany({
+        where: { skillId: parent.skillId },
+      })
+    },
+    // applicants: async (parent) => {
+    //   return await prisma.jobApplication.findMany({
+    //     where: { jobPostId: parent.jobPostId },
+    //     // include: { user: true },
+    //   })
+    // },
   },
 
   Resume: {
