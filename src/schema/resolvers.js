@@ -610,6 +610,11 @@ const resolvers = {
     jobPosting: async (parent) => {
       return await prisma.jobPosting.findUnique({
         where: { jobPostId: parent.jobPostId },
+
+        include: {
+          skillsRequired: true,
+          postedBy: true,
+        },
       })
     },
   },
