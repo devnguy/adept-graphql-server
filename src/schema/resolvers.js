@@ -55,6 +55,7 @@ const resolvers = {
 
         include: {
           skillsRequired: true,
+          postedBy: true,
           applicants: true,
         },
       })
@@ -587,15 +588,62 @@ const resolvers = {
   },
 
   User: {
+    skills: async (parent) => {
+      return parent.skills.map(async (skill) => {
+        return await prisma.skill.findFirst({
+          where: { skillId: skill.skillId },
+        })
+      })
+    },
+
     jobApplications: async (parent) => {
       return await prisma.jobApplication.findMany({
         where: { userId: parent.userId },
+
+        include: {
+          user: true,
+          jobPosting: true,
+        },
       })
     },
 
     jobPostings: async (parent) => {
       return await prisma.jobPosting.findMany({
         where: { userId: parent.userId },
+
+        include: {
+          skillsRequired: true,
+          postedBy: true,
+          applicants: true,
+        },
+      })
+    },
+
+    contacts: async (parent) => {
+      return parent.contacts.map(async (contact) => {
+        return await prisma.user.findUnique({
+          where: { userId: contact.userId },
+
+          include: {
+            skills: true,
+            jobApplications: true,
+            jobPostings: true,
+            contacts: true,
+            resume: true,
+          },
+        })
+      })
+    },
+
+    resume: async (parent) => {
+      console.log(parent)
+      return await prisma.resume.findUnique({
+        where: { resumeId: parent.resume.resumeId },
+
+        include: {
+          education: true,
+          workExperience: true,
+        },
       })
     },
   },
@@ -604,6 +652,14 @@ const resolvers = {
     user: async (parent) => {
       return await prisma.user.findUnique({
         where: { userId: parent.userId },
+
+        include: {
+          skills: true,
+          jobApplications: true,
+          jobPostings: true,
+          contacts: true,
+          resume: true,
+        },
       })
     },
 
@@ -614,6 +670,7 @@ const resolvers = {
         include: {
           skillsRequired: true,
           postedBy: true,
+          applicants: true,
         },
       })
     },
@@ -624,6 +681,35 @@ const resolvers = {
       // Finding user who created job post
       return await prisma.user.findUnique({
         where: { userId: parent.userId },
+
+        include: {
+          skills: true,
+          jobApplications: true,
+          jobPostings: true,
+          contacts: true,
+          resume: true,
+        },
+      })
+    },
+
+    skillsRequired: async (parent) => {
+      return parent.skillsRequired.map(async (skill) => {
+        return await prisma.skill.findFirst({
+          where: { skillId: skill.skillId },
+        })
+      })
+    },
+
+    applicants: async (parent) => {
+      return parent.applicants.map(async (applicant) => {
+        return await prisma.jobApplication.findFirst({
+          where: { jobAppId: applicant.jobAppId },
+
+          include: {
+            jobPosting: true,
+            user: true,
+          },
+        })
       })
     },
   },
