@@ -22,6 +22,7 @@ model User {
   resume           Resume?
   contactsRelation User[]           @relation("contacts")
   @@unique([email])
+  @@unique([userId])
 }
 
 model JobApplication {
@@ -31,6 +32,7 @@ model JobApplication {
   dateApplied DateTime   @default(now())
   userId      String
   jobPostId   String
+  @@unique([jobAppId])
 }
 
 model JobPosting {
@@ -47,6 +49,7 @@ model JobPosting {
   applicants     JobApplication[]
   postedBy       User             @relation(fields: [userId], references: [userId])
   userId         String
+  @@unique([jobPostId])
 }
 
 model Skill {
@@ -55,6 +58,7 @@ model Skill {
   User       User[]       @relation(references: [userId])
   JobPosting JobPosting[] @relation(references: [jobPostId])
   @@unique([name])
+  @@unique([skillId])
 }
 
 model Education {
@@ -67,6 +71,7 @@ model Education {
   gpa       Float?
   Resume    Resume @relation(fields: [resumeId], references: [resumeId])
   resumeId  String
+  @@unique([educationId])
 }
 
 model WorkExperience {
@@ -81,6 +86,7 @@ model WorkExperience {
   description       String
   Resume            Resume  @relation(fields: [resumeId], references: [resumeId])
   resumeId          String
+  @@unique([workExpId])
 }
 
 model Resume {
@@ -89,6 +95,7 @@ model Resume {
   workExperience WorkExperience[]
   User           User             @relation(fields: [userId], references: [userId])
   userId         String
+  @@unique([resumeId])
 }
 
 enum UserType {
