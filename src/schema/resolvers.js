@@ -636,7 +636,6 @@ const resolvers = {
     },
 
     resume: async (parent) => {
-      console.log(parent)
       return await prisma.resume.findUnique({
         where: { resumeId: parent.resume.resumeId },
 
