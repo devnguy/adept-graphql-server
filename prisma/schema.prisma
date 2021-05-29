@@ -45,7 +45,7 @@ model JobPosting {
   state          String?
   salary         Int?
   type           JobType
-  description    String
+  description    String           @db.Text
   applicants     JobApplication[]
   postedBy       User             @relation(fields: [userId], references: [userId])
   userId         String
@@ -83,7 +83,7 @@ model WorkExperience {
   isCurrentPosition Boolean
   city              String?
   state             String?
-  description       String
+  description       String  @db.Text
   Resume            Resume  @relation(fields: [resumeId], references: [resumeId])
   resumeId          String
   @@unique([workExpId])
