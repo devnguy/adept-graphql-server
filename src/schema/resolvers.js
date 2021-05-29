@@ -35,6 +35,7 @@ const resolvers = {
           jobApplications: true,
           jobPostings: true,
           contacts: true,
+          resume: true,
         },
       })
     },
