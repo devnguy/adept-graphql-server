@@ -606,7 +606,12 @@ const resolvers = {
         .findUnique({
           where: { userId: parent.userId },
         })
-        .jobApplications()
+        .jobApplications({
+          include: {
+            user: true,
+            jobPosting: true,
+          },
+        })
     },
 
     jobPostings: async (parent) => {
