@@ -598,26 +598,25 @@ const resolvers = {
     },
 
     jobApplications: async (parent) => {
-      return await prisma.jobApplication.findMany({
-        where: { userId: parent.userId },
-
-        include: {
-          user: true,
-          jobPosting: true,
-        },
-      })
+      return await prisma.user
+        .findUnique({
+          where: { userId: parent.userId },
+        })
+        .jobApplications()
     },
 
     jobPostings: async (parent) => {
-      return await prisma.jobPosting.findMany({
-        where: { userId: parent.userId },
-
-        include: {
-          skillsRequired: true,
-          postedBy: true,
-          applicants: true,
-        },
-      })
+      return await prisma.user
+        .findUnique({
+          where: { userId: parent.userId },
+        })
+        .jobPostings({
+          include: {
+            skillsRequired: true,
+            postedBy: true,
+            applicants: true,
+          },
+        })
     },
 
     contacts: async (parent) => {
@@ -716,15 +715,19 @@ const resolvers = {
 
   Resume: {
     education: async (parent) => {
-      return await prisma.education.findMany({
-        where: { resumeId: parent.resumeId },
-      })
+      return await prisma.resume
+        .findUnique({
+          where: { resumeId: parent.resumeId || undefined },
+        })
+        .education()
     },
 
     workExperience: async (parent) => {
-      return await prisma.workExperience.findMany({
-        where: { resumeId: parent.resumeId },
-      })
+      return await prisma.resume
+        .findUnique({
+          where: { resumeId: parent.resumeId || undefined },
+        })
+        .workExperience()
     },
   },
 }
