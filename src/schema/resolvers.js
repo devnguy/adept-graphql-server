@@ -590,49 +590,61 @@ const resolvers = {
 
   User: {
     skills: async (parent) => {
-      return parent.skills.map(async (skill) => {
-        return await prisma.skill.findFirst({
-          where: { skillId: skill.skillId },
-        })
+      const skillIds = parent.skills.map((skill) => skill.skillId)
+
+      return await prisma.skill.findMany({
+        where: {
+          skillId: {
+            in: skillIds,
+          },
+        },
       })
     },
 
     jobApplications: async (parent) => {
-      return await prisma.jobApplication.findMany({
-        where: { userId: parent.userId },
-
-        include: {
-          user: true,
-          jobPosting: true,
-        },
-      })
+      return await prisma.user
+        .findUnique({
+          where: { userId: parent.userId },
+        })
+        .jobApplications({
+          include: {
+            user: true,
+            jobPosting: true,
+          },
+        })
     },
 
     jobPostings: async (parent) => {
-      return await prisma.jobPosting.findMany({
-        where: { userId: parent.userId },
-
-        include: {
-          skillsRequired: true,
-          postedBy: true,
-          applicants: true,
-        },
-      })
+      return await prisma.user
+        .findUnique({
+          where: { userId: parent.userId },
+        })
+        .jobPostings({
+          include: {
+            skillsRequired: true,
+            postedBy: true,
+            applicants: true,
+          },
+        })
     },
 
     contacts: async (parent) => {
-      return parent.contacts.map(async (contact) => {
-        return await prisma.user.findUnique({
-          where: { userId: contact.userId },
+      const contactIds = parent.contacts.map((contact) => contact.userId)
 
-          include: {
-            skills: true,
-            jobApplications: true,
-            jobPostings: true,
-            contacts: true,
-            resume: true,
+      return await prisma.user.findMany({
+        where: {
+          userId: {
+            in: contactIds,
           },
-        })
+        },
+
+        include: {
+          skills: true,
+          jobApplications: true,
+          jobPostings: true,
+          contacts: true,
+          resume: true,
+        },
       })
     },
 
@@ -693,38 +705,52 @@ const resolvers = {
     },
 
     skillsRequired: async (parent) => {
-      return parent.skillsRequired.map(async (skill) => {
-        return await prisma.skill.findFirst({
-          where: { skillId: skill.skillId },
-        })
+      const skillIds = parent.skillsRequired.map((skill) => skill.skillId)
+
+      return await prisma.skill.findMany({
+        where: {
+          skillId: {
+            in: skillIds,
+          },
+        },
       })
     },
 
     applicants: async (parent) => {
-      return parent.applicants.map(async (applicant) => {
-        return await prisma.jobApplication.findFirst({
-          where: { jobAppId: applicant.jobAppId },
+      const applicationIds = parent.applicants.map(
+        (application) => application.jobAppId
+      )
 
-          include: {
-            jobPosting: true,
-            user: true,
+      return await prisma.jobApplication.findMany({
+        where: {
+          jobAppId: {
+            in: applicationIds,
           },
-        })
+        },
+
+        include: {
+          jobPosting: true,
+          user: true,
+        },
       })
     },
   },
 
   Resume: {
     education: async (parent) => {
-      return await prisma.education.findMany({
-        where: { resumeId: parent.resumeId },
-      })
+      return await prisma.resume
+        .findUnique({
+          where: { resumeId: parent.resumeId || undefined },
+        })
+        .education()
     },
 
     workExperience: async (parent) => {
-      return await prisma.workExperience.findMany({
-        where: { resumeId: parent.resumeId },
-      })
+      return await prisma.resume
+        .findUnique({
+          where: { resumeId: parent.resumeId || undefined },
+        })
+        .workExperience()
     },
   },
 }
