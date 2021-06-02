@@ -3,7 +3,9 @@ const typeDefs = require('./schema/schema')
 const resolvers = require('./schema/resolvers')
 const getUser = require('./auth')
 
-require('dotenv').config()
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
 
 const server = new ApolloServer({
   typeDefs,
